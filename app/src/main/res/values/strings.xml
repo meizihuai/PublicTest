@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">众手测试软件</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_qo_evideo_player">QoEVideoPlayerActivity</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="title_activity_one_key_test_his">OneKeyTestHisActivity</string>
+</resources>

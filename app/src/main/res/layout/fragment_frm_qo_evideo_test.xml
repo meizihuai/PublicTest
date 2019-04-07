@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="@drawable/icon_video_start_bg_new" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <RelativeLayout
+                android:id="@+id/rl_btn_start"
+                android:clickable="true"
+                android:clipChildren="true"
+                android:focusable="true"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/icon_start"
+                android:layout_width="350dp"
+                android:layout_height="350dp">
+                <TextView
+                    android:layout_centerInParent="true"
+                    android:id="@+id/tv_start"
+                    android:textSize="18sp"
+                    android:textColor="#027FBA"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="开始测试"/>
+            </RelativeLayout>
+
+            <ImageView
+                android:layout_alignParentBottom="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/icon_wave"/>
+            <RelativeLayout
+                android:layout_alignParentBottom="true"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="100dp">
+                <TextView
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="30dp"
+                    android:gravity="center"
+                    android:textSize="18sp"
+                    android:textColor="#027FBA"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="本APP所有视频仅用于网络测试和研究使用"/>
+            </RelativeLayout>
+        </RelativeLayout>
+    </RelativeLayout>
+</RelativeLayout>

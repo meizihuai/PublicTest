@@ -1,0 +1,460 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FrmMainTest">
+
+    <ScrollView
+        android:id="@+id/scrollView2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="8dp"
+            android:orientation="vertical">
+
+            <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_margin="5px"-->
+            <!--android:background="@drawable/shape_corner"-->
+            <!--android:gravity="center"-->
+            <!--android:orientation="vertical">-->
+
+            <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:padding="5dp"-->
+            <!--android:text="手机基本信息"-->
+            <!--android:textColor="@color/green"-->
+            <!--android:textSize="15dp" />-->
+
+            <!--<View-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="1px"-->
+            <!--android:background="@color/gray" />-->
+
+            <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:orientation="horizontal">-->
+
+            <!--<TextView-->
+            <!--android:id="@+id/txtphoneModel"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="0.5"-->
+            <!--android:padding="5dp"-->
+            <!--android:text="手机:MI 6"-->
+            <!--android:textColor="@color/black"-->
+            <!--android:textSize="12dp" />-->
+
+            <!--<TextView-->
+            <!--android:id="@+id/txtphoneOS"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="0.5"-->
+            <!--android:padding="5dp"-->
+            <!--android:text="系统:8.0.0"-->
+            <!--android:textColor="@color/black"-->
+            <!--android:textSize="12dp" />-->
+            <!--</LinearLayout>-->
+
+            <!--<View-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="1px"-->
+            <!--android:background="@color/gray" />-->
+
+            <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:orientation="horizontal">-->
+
+            <!--<TextView-->
+            <!--android:id="@+id/txtIMSI"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="0.5"-->
+            <!--android:padding="5dp"-->
+            <!--android:text="IMSI:123456789"-->
+            <!--android:textColor="@color/black"-->
+            <!--android:textSize="12dp" />-->
+
+            <!--<TextView-->
+            <!--android:id="@+id/txtIMEI"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="0.5"-->
+            <!--android:padding="5dp"-->
+            <!--android:text="IMEI:123456789"-->
+            <!--android:textColor="@color/black"-->
+            <!--android:textSize="12dp" />-->
+            <!--</LinearLayout>-->
+
+
+            <!--</LinearLayout>-->
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/cardViewBak"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="5dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/txtSignalType"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="0.5"
+                        android:gravity="left"
+                        android:padding="5dp"
+                        android:text="信号:4G 中国移动"
+                        android:textColor="@color/mainTxt"
+                        android:textSize="14dp" />
+
+                    <TextView
+                        android:id="@+id/txtnetType"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="0.5"
+                        android:gravity="left"
+                        android:padding="5dp"
+                        android:text="数据:WIFI"
+                        android:textColor="@color/mainTxt"
+                        android:textSize="14dp" />
+
+
+                    <!--<TextView-->
+                        <!--android:id="@+id/txtFreqLable"-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_gravity="center"-->
+                        <!--android:layout_weight="0.3"-->
+                        <!--android:gravity="left"-->
+                        <!--android:padding="5dp"-->
+                        <!--android:text="制式:FDD"-->
+                        <!--android:textColor="@color/mainTxt"-->
+                        <!--android:textSize="14dp" />-->
+
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:cardBackgroundColor="@color/cardViewBak"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="5dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/txtLon"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="0.5"
+                            android:gravity="left"
+                            android:padding="5dp"
+                            android:text="经度:113.456"
+                            android:textColor="@color/mainTxt"
+                            android:textSize="14dp" />
+
+                        <TextView
+                            android:id="@+id/txtLat"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="0.5"
+                            android:gravity="left"
+                            android:padding="5dp"
+                            android:text="纬度:23.456"
+                            android:textColor="@color/mainTxt"
+                            android:textSize="14dp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/txtSatelliteCount"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="0.5"
+                            android:gravity="left"
+                            android:padding="5dp"
+                            android:text="卫星:5"
+                            android:textColor="@color/mainTxt"
+                            android:textSize="14dp" />
+
+                        <TextView
+                            android:id="@+id/txtAccuracy"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="0.5"
+                            android:gravity="left"
+                            android:padding="5dp"
+                            android:text="精度:10.6"
+                            android:textColor="@color/mainTxt"
+                            android:textSize="14dp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:cardBackgroundColor="@color/cardViewBak"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="5dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/txtTAC"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="0.3"
+                            android:gravity="left"
+                            android:padding="5dp"
+                            android:text="TAC:31246"
+                            android:textColor="@color/mainTxt"
+                            android:textSize="14dp" />
+
+                        <TextView
+                            android:id="@+id/txtCI"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="0.4"
+                            android:gravity="left"
+                            android:padding="5dp"
+                            android:text="eCI:141144576"
+                            android:textColor="@color/mainTxt"
+                            android:textSize="14dp" />
+
+                        <TextView
+                            android:id="@+id/txtPCI"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="0.3"
+                            android:gravity="left"
+                            android:padding="5dp"
+                            android:text="PCI:"
+                            android:textColor="@color/mainTxt"
+                            android:textSize="14dp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/txteNB"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="0.3"
+                            android:gravity="left"
+                            android:padding="5dp"
+                            android:text="eNB:551346"
+                            android:textColor="@color/mainTxt"
+                            android:textSize="14dp" />
+
+                        <TextView
+                            android:id="@+id/txtCellID"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="0.4"
+                            android:gravity="left"
+                            android:padding="5dp"
+                            android:text="CellID:0"
+                            android:textColor="@color/mainTxt"
+                            android:textSize="14dp" />
+
+                        <TextView
+                            android:id="@+id/txtEARFCN"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="0.3"
+                            android:gravity="left"
+                            android:padding="5dp"
+                            android:text="EARFCN:100"
+                            android:textColor="@color/mainTxt"
+                            android:textSize="12dp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/txtRSRP"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="0.3"
+                            android:gravity="left"
+                            android:padding="5dp"
+                            android:text="RSRP:-78 dBm"
+                            android:textColor="@color/mainTxt"
+                            android:textSize="14dp" />
+
+                        <TextView
+                            android:id="@+id/txtSINR"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="0.4"
+                            android:gravity="left"
+                            android:padding="5dp"
+                            android:text="SINR:17 dB"
+                            android:textColor="@color/mainTxt"
+                            android:textSize="14dp" />
+
+                        <TextView
+                            android:id="@+id/txtRSRQ"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="0.3"
+                            android:gravity="left"
+                            android:padding="5dp"
+                            android:text="FDD/Band99/1800"
+                            android:textColor="@color/mainTxt"
+                            android:textSize="12dp" />
+
+                    </LinearLayout>
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:layout_marginTop="10dp"
+                app:cardBackgroundColor="@color/cardViewBak"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="5dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/txtAvgRSRP"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:text="采集时间:2019-01-14 16:00:00"
+                        android:textColor="@color/mainTxt"
+                        android:textSize="14dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <com.bin.david.form.core.SmartTable
+                            android:id="@+id/neighbourListTable"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:textSize="8dp" />
+                    </LinearLayout>
+
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginTop="10dp"
+                app:cardBackgroundColor="@color/cardViewBak"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="5dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:text="最近信号列表"
+                        android:textColor="@color/mainTxt"
+                        android:textSize="14dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <com.bin.david.form.core.SmartTable
+                            android:id="@+id/cellSigNalInfoListTable"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:textSize="8dp" />
+                    </LinearLayout>
+
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:orientation="vertical">
+
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</FrameLayout>

@@ -1,0 +1,568 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="#05ACED"
+        android:title="Login">
+
+        <TextView
+            android:id="@+id/toolbar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:singleLine="true"
+            android:text="UniQoE"
+            android:textColor="@color/white"
+            android:textSize="18dp" />
+    </android.support.v7.widget.Toolbar>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/activity_bg">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="85dp"
+            android:background="@color/top_bg">
+
+        </RelativeLayout>
+        <!--打分-->
+        <RelativeLayout
+            android:id="@+id/rl_score_parent"
+            android:layout_width="345dp"
+            android:layout_height="150dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="15dp"
+            android:background="@drawable/socre_bg">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="总 评 分"
+                    android:textColor="@color/text_gray"
+                    android:gravity="center"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/rl_score"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/iv_rating_div_1"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:layout_width="0dp"
+                    android:layout_height="70dp"
+                    android:layout_weight="0.2"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/iv_rating_1"
+                        android:layout_width="32.15dp"
+                        android:layout_height="30.7dp"
+                        android:background="@drawable/icon_rating_nomal" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/iv_rating_div_2"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:layout_width="0dp"
+                    android:layout_height="70dp"
+                    android:layout_weight="0.2"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/iv_rating_2"
+                        android:layout_width="32.15dp"
+                        android:layout_height="30.7dp"
+                        android:background="@drawable/icon_rating_nomal" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/iv_rating_div_3"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:layout_width="0dp"
+                    android:layout_height="70dp"
+                    android:layout_weight="0.2"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/iv_rating_3"
+                        android:layout_width="32.15dp"
+                        android:layout_height="30.7dp"
+                        android:background="@drawable/icon_rating_nomal" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/iv_rating_div_4"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:layout_width="0dp"
+                    android:layout_height="70dp"
+                    android:layout_weight="0.2"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/iv_rating_4"
+                        android:layout_width="32.15dp"
+                        android:layout_height="30.7dp"
+                        android:background="@drawable/icon_rating_nomal" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/iv_rating_div_5"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:layout_width="0dp"
+                    android:layout_height="70dp"
+                    android:layout_weight="0.2"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/iv_rating_5"
+                        android:layout_width="32.15dp"
+                        android:layout_height="30.7dp"
+                        android:background="@drawable/icon_rating_nomal" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/score_des"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rl_score"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="5dp"
+                android:textColor="@color/ScoreResultyellow"
+                android:textSize="14sp" />
+
+            <RelativeLayout
+                android:id="@+id/rl_score_time"
+                android:layout_width="wrap_content"
+                android:layout_height="15dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="11.5dp"
+                android:layout_marginBottom="15dp">
+
+                <!--<ImageView-->
+                    <!--android:id="@+id/iv_time"-->
+                    <!--android:layout_width="15dp"-->
+                    <!--android:layout_height="15dp"-->
+                    <!--android:layout_centerVertical="true"-->
+                    <!--android:background="@mipmap/popup_time" />-->
+
+                <!--<TextView-->
+                    <!--android:id="@+id/tv_time"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_centerVertical="true"-->
+                    <!--android:layout_marginLeft="5.5dp"-->
+                    <!--android:layout_toRightOf="@+id/iv_time"-->
+                    <!--android:text="2018-11-05 12:10:20"-->
+                    <!--android:textColor="@color/gray"-->
+                    <!--android:textSize="12sp" />-->
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <!--评价-->
+        <LinearLayout
+            android:id="@+id/ll_pingjia"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rl_score_parent"
+            android:layout_marginLeft="18dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="20px"
+            android:orientation="vertical">
+            <!--清晰程度-->
+
+            <!--启动速度-->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tv_qidong"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="加载速度"
+                    android:textColor="@color/text_gray"
+                    android:textSize="14sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="65dp"
+                    android:layout_below="@+id/tv_qidong"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/iv_qd_div_1"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.2"
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/iv_qd_1"
+                            android:layout_width="32.15dp"
+                            android:layout_height="30.7dp"
+                            android:background="@drawable/icon_rating_nomal" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/iv_qd_div_2"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.2"
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/iv_qd_2"
+                            android:layout_width="32.15dp"
+                            android:layout_height="30.7dp"
+                            android:background="@drawable/icon_rating_nomal" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/iv_qd_div_3"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.2"
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/iv_qd_3"
+                            android:layout_width="32.15dp"
+                            android:layout_height="30.7dp"
+                            android:background="@drawable/icon_rating_nomal" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/iv_qd_div_4"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.2"
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/iv_qd_4"
+                            android:layout_width="32.15dp"
+                            android:layout_height="30.7dp"
+                            android:background="@drawable/icon_rating_nomal" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/iv_qd_div_5"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.2"
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/iv_qd_5"
+                            android:layout_width="32.15dp"
+                            android:layout_height="30.7dp"
+                            android:background="@drawable/icon_rating_nomal" />
+                    </LinearLayout>
+
+                </LinearLayout>
+            </RelativeLayout>
+            <!--流畅速度-->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tv_liuchangdu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="流畅度"
+                    android:textColor="@color/text_gray"
+                    android:textSize="14sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="65dp"
+                    android:layout_below="@+id/tv_liuchangdu"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/iv_lc_div_1"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.2"
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/iv_lc_1"
+                            android:layout_width="32.15dp"
+                            android:layout_height="30.7dp"
+                            android:background="@drawable/icon_rating_nomal" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/iv_lc_div_2"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.2"
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/iv_lc_2"
+                            android:layout_width="32.15dp"
+                            android:layout_height="30.7dp"
+                            android:background="@drawable/icon_rating_nomal" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/iv_lc_div_3"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.2"
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/iv_lc_3"
+                            android:layout_width="32.15dp"
+                            android:layout_height="30.7dp"
+                            android:background="@drawable/icon_rating_nomal" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/iv_lc_div_4"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.2"
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/iv_lc_4"
+                            android:layout_width="32.15dp"
+                            android:layout_height="30.7dp"
+                            android:background="@drawable/icon_rating_nomal" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/iv_lc_div_5"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.2"
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/iv_lc_5"
+                            android:layout_width="32.15dp"
+                            android:layout_height="30.7dp"
+                            android:background="@drawable/icon_rating_nomal" />
+                    </LinearLayout>
+
+                </LinearLayout>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tv_qingxidu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="清晰度"
+                    android:textColor="@color/text_gray"
+                    android:textSize="14sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="65dp"
+                    android:layout_below="@+id/tv_qingxidu"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/iv_qx_div_1"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.2"
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/iv_qx_1"
+                            android:layout_width="32.15dp"
+                            android:layout_height="30.7dp"
+                            android:background="@drawable/icon_rating_nomal" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/iv_qx_div_2"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.2"
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/iv_qx_2"
+                            android:layout_width="32.15dp"
+                            android:layout_height="30.7dp"
+                            android:background="@drawable/icon_rating_nomal" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/iv_qx_div_3"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.2"
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal">
+                        <ImageView
+                            android:id="@+id/iv_qx_3"
+                            android:layout_width="32.15dp"
+                            android:layout_height="30.7dp"
+                            android:background="@drawable/icon_rating_nomal" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/iv_qx_div_4"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.2"
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/iv_qx_4"
+                            android:layout_width="32.15dp"
+                            android:layout_height="30.7dp"
+                            android:background="@drawable/icon_rating_nomal" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/iv_qx_div_5"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.2"
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/iv_qx_5"
+                            android:layout_width="32.15dp"
+                            android:layout_height="30.7dp"
+                            android:background="@drawable/icon_rating_nomal" />
+                    </LinearLayout>
+
+                </LinearLayout>
+            </RelativeLayout>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_commit"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/commit_bg"
+            android:gravity="center"
+            android:text="提 交"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
+    </RelativeLayout>
+</LinearLayout>
