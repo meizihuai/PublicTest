@@ -520,6 +520,7 @@ public class GetPhoneInfoHelper {
                         PI.sigNalInfo = "LTE:" + Itedbm + "dBm,Detail:" + signalInfo;
                     } else if (tm.getNetworkType() == TelephonyManager.NETWORK_TYPE_GSM
                             || tm.getNetworkType() == TelephonyManager.NETWORK_TYPE_CDMA
+                            || tm.getNetworkType() == TelephonyManager.NETWORK_TYPE_EHRPD
                             || tm.getNetworkType() == TelephonyManager.NETWORK_TYPE_GPRS
                             || tm.getNetworkType() == TelephonyManager.NETWORK_TYPE_EDGE) {
 
@@ -531,7 +532,6 @@ public class GetPhoneInfoHelper {
                         PI.SINR = SINR;
                         PI.RSRQ = RSRQ;
                         PI.sigNalInfo = "GSM:" + dbm + "dBm,Detail:" + signalInfo;
-
                     } else if (tm.getNetworkType() == TelephonyManager.NETWORK_TYPE_UMTS
                             || tm.getNetworkType() == TelephonyManager.NETWORK_TYPE_HSDPA
                             || tm.getNetworkType() == TelephonyManager.NETWORK_TYPE_HSPA

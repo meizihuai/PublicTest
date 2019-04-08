@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.media.MediaPlayer;
 import android.os.PowerManager;
@@ -63,7 +64,8 @@ public class MainActivity extends AppCompatActivity implements FrmMainTest.OnFra
         , FrmOneKeyTest.OnFragmentInteractionListener
         , FrmAmap.OnFragmentInteractionListener
         , FrmAmapHTML.OnFragmentInteractionListener
-        , FrmQoEVideoHTML.OnFragmentInteractionListener {
+        , FrmQoEVideoHTML.OnFragmentInteractionListener
+        , FrmHTTP.OnFragmentInteractionListener{
     boolean isBeta = false;
     boolean islogined = false;
     String betaVerison = "6";
@@ -85,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements FrmMainTest.OnFra
     private FrmQoEVideoHTML frmQoEVideoHTML;
     private FrmOneKeyTest frmOneKeyTest;
     private FrmMe frmMe;
+    private FrmHTTP frmHTTP;
    // private FrmAmapHTML frmAmapHTML;
     private boolean isSetedImeiAndImsi = false;
     private String serverURL = "http://111.53.74.132:7062/default.ashx";
@@ -156,6 +159,9 @@ public class MainActivity extends AppCompatActivity implements FrmMainTest.OnFra
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);    //竖屏
+        //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);  //横屏
+
         StatusBarUtil.setColor(this, 0x05ACED, 0);  //设置状态栏颜色，保持沉浸
         try {
             String versionName = APKVersionCodeUtils.getVerName(this);
@@ -232,10 +238,10 @@ public class MainActivity extends AppCompatActivity implements FrmMainTest.OnFra
                         "测试",
                         R.drawable.item4_before,
                         R.drawable.item4_after)
-//                .addItem(FrmAmapHTML.class,
-//                        "地图",
-//                        R.drawable.amap_before,
-//                        R.drawable.amap_after)
+                .addItem(FrmHTTP.class,
+                        "HTTP",
+                        R.drawable.frmhttp_before,
+                        R.drawable.frmhttp_after)
                 .addItem(FrmMe.class,
                         "我的",
                         R.drawable.item3_before,
@@ -245,8 +251,9 @@ public class MainActivity extends AppCompatActivity implements FrmMainTest.OnFra
         frmQoEVideoHTML = (FrmQoEVideoHTML) bottomBar.getFragment(0);
         frmMainTest = (FrmMainTest) bottomBar.getFragment(1);
         frmOneKeyTest = (FrmOneKeyTest) bottomBar.getFragment(2);
+        frmHTTP=(FrmHTTP) bottomBar.getFragment(3);
 //        frmAmapHTML = (FrmAmapHTML) bottomBar.getFragment(3);
-        frmMe = (FrmMe) bottomBar.getFragment(3);
+        frmMe = (FrmMe) bottomBar.getFragment(4);
 
         iniOthers();
     }
@@ -611,13 +618,13 @@ public class MainActivity extends AppCompatActivity implements FrmMainTest.OnFra
 //         }).start();
         //   LogHelper.log(this,"将设置应用到'我的'屏...");
         if (frmMe != null) {
-            View view = frmMe.getMyView();
+          final  View view = frmMe.getMyView();
             if (view != null) {
                 Switch switchQoEScore = frmMe.getMyView().findViewById(R.id.switchQoESocre);
                 Switch switchQoEScreenRecord = frmMe.getMyView().findViewById(R.id.switchQoEScreenRecord);
                 Spinner spinner_serverIp = frmMe.getMyView().findViewById(R.id.spinner_serverUrl);
-                Spinner spinner_videoType = frmMe.getMyView().findViewById(R.id.spinner_videoType);
-                Setting tmpSetting = GlobalInfo.getSetting(this);
+                final Spinner spinner_videoType = frmMe.getMyView().findViewById(R.id.spinner_videoType);
+                final Setting tmpSetting = GlobalInfo.getSetting(this);
                 if (tmpSetting != null) {
                     switchQoEScore.setChecked(tmpSetting.switchQoEScore);
                     switchQoEScreenRecord.setChecked(tmpSetting.switchQoEScreenRecord);
@@ -629,15 +636,40 @@ public class MainActivity extends AppCompatActivity implements FrmMainTest.OnFra
                             break;
                         }
                     }
-                    for (int i = 0; i < spinner_videoType.getAdapter().getCount(); i++) {
-                        if (tmpSetting.videoWantType.equals(spinner_videoType.getAdapter().getItem(i).toString())) {
-                            spinner_videoType.setSelection(i);
-                            break;
-                        }
-                    }
 
                 }
+                HTTPHelper.GetH((GlobalInfo.serverUrl + "?func=GetQoEVideoSourceTypeList"), new HTTPHelper.HTTPResponse() {
+                    @Override
+                    public void OnNormolResponse(NormalResponse np) {
+                        if(np.result && np.data!=null){
+                            try{
+                                List<String> list=new ArrayList<>();
+                                list=new Gson().fromJson(np.data.toString(),list.getClass());
+                                final  List<String> tmp=list;
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        frmMe.iniSpinnerVideoType(tmp);
+                                        if (tmpSetting != null) {
+                                            for (int i = 0; i < spinner_videoType.getAdapter().getCount(); i++) {
+                                                if (tmpSetting.videoWantType.equals(spinner_videoType.getAdapter().getItem(i).toString())) {
+                                                    spinner_videoType.setSelection(i);
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                });
+
+                            }catch (Exception e){
+
+                            }
+                        }
+                    }
+                });
             }
+
+
         }
         LogHelper.log(this, "开启Ping线程...");
         StartPing();

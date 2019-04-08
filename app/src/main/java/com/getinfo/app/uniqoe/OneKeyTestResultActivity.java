@@ -2,6 +2,7 @@ package com.getinfo.app.uniqoe;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -17,6 +18,7 @@ public class OneKeyTestResultActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_one_key_test_result);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         StatusBarUtil.setColor(this,0x05ACED,0);  //设置状态栏颜色，保持沉浸
         Intent intent=getIntent();
         String str=intent.getStringExtra("oneKeyTestInfo");

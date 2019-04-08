@@ -2,6 +2,7 @@ package com.getinfo.app.uniqoe;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -35,6 +36,7 @@ public class AboutActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         StatusBarUtil.setColor(this,0x05ACED,0);
         iniWebView();
 //        webView = findViewById(R.id.webView);

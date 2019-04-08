@@ -2,6 +2,7 @@ package com.getinfo.app.uniqoe;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
 import android.os.Handler;
@@ -108,6 +109,8 @@ public class QoEVideoPlayerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qo_evideo_player);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
         StatusBarUtil.setColor(this, 0x27292E, 0);
         Intent getIntent = getIntent();
         String piJson = getIntent.getStringExtra("piJson");

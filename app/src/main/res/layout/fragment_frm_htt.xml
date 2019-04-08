@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FrmHTTP">
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical">
+      <!--<LinearLayout-->
+          <!--android:layout_width="match_parent"-->
+          <!--android:layout_height="100dp"-->
+          <!--android:orientation="vertical">-->
+
+      <!--</LinearLayout>-->
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:orientation="vertical">
+          <WebView
+              android:id="@+id/webView"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+          </WebView>
+
+      </LinearLayout>
+  </LinearLayout>
+
+</FrameLayout>

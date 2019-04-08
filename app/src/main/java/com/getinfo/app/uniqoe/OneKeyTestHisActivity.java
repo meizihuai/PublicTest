@@ -1,6 +1,7 @@
 package com.getinfo.app.uniqoe;
 
 import android.app.Activity;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -27,6 +28,7 @@ public class OneKeyTestHisActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mission);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         StatusBarUtil.setColor(this,0x05ACED,0);
 
         webView = findViewById(R.id.webView);

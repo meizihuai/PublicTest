@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -39,6 +40,9 @@ import okhttp3.Response;
 public class FrmMe extends Fragment {
     private  boolean isFirstSelectedServerUrl=true;
     private TextView txtPhoneModel, txtphoneOS, txtIMSI, txtIMEI,txtBonusPoints,txtAID;
+    private LinearLayout divPhoneOS;
+    private int divPhoneOSClickTime=0;
+    private long divPhoneOSClickms=System.currentTimeMillis();
     private View myView;
     private String apkUrl;
 
@@ -50,6 +54,7 @@ public class FrmMe extends Fragment {
 
     private String imei = "";
     private Button  btnMission,btnAbout;
+
    // private Button btnCheckUpdate, btnGetUpdate;
     private TextView txtLocalVersion;
     private Switch switchQoEScore,switchQoEScreenRecord;
@@ -165,13 +170,30 @@ public class FrmMe extends Fragment {
                 startActivity(intent);
             }
         });
+        divPhoneOS=myView.findViewById(R.id.divPhoneOS);
+        divPhoneOS.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                long cms=System.currentTimeMillis();
+                if(cms-divPhoneOSClickms>1000){
+                    divPhoneOSClickTime=0;
+                }
+                divPhoneOSClickms=System.currentTimeMillis();
+                divPhoneOSClickTime++;
+                if(divPhoneOSClickTime==4){
+                    divPhoneOSClickTime=0;
+                    String str="IMEI:"+GlobalInfo.myDeviceImei+" IMSI:"+GlobalInfo.myDeviceImsi;
+                    Toast.makeText(getContext(),str, Toast.LENGTH_LONG).show();
+                }
+            }
+        });
         CheckCanUpdate();
         CheckDevicePermission();
         return myView;
     }
 
     private void iniSpinner() {
-        iniSpinnerVideoType();
+      //  iniSpinnerVideoType();
         final List<String> data_list;
         ArrayAdapter<String> arr_adapter;
         data_list = new ArrayList<String>();
@@ -226,17 +248,18 @@ public class FrmMe extends Fragment {
         }
 
     }
-    private void iniSpinnerVideoType(){
-        final List<String> data_list;
+    public void iniSpinnerVideoType( final List<String> data_list){
+
         ArrayAdapter<String> arr_adapter;
-        data_list = new ArrayList<String>();
-        data_list.add("全部");
-        data_list.add("小视频");
-        data_list.add("综艺");
-        data_list.add("小品");
-        data_list.add("相声");
-        data_list.add("电影");
-        data_list.add("音乐");
+//        final List<String> data_list;
+//        data_list = new ArrayList<String>();
+//        data_list.add("全部");
+//        data_list.add("小视频");
+//        data_list.add("综艺");
+//        data_list.add("小品");
+//        data_list.add("相声");
+//        data_list.add("电影");
+//        data_list.add("音乐");
 
         Spinner spinner=myView.findViewById(R.id.spinner_videoType);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

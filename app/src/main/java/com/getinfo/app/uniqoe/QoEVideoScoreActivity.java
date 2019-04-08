@@ -1,6 +1,7 @@
 package com.getinfo.app.uniqoe;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -45,6 +46,7 @@ public class QoEVideoScoreActivity extends AppCompatActivity implements View.OnC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qo_evideo_score);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         StatusBarUtil.setColor(this, 0x05ACED, 0);
         Intent getIntent = getIntent();
         String qoEVideoInfoJson = getIntent.getStringExtra("QoEVideoInfo");
