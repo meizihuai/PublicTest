@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.webkit.ConsoleMessage;
 import android.webkit.GeolocationPermissions;
 import android.webkit.JavascriptInterface;
@@ -33,6 +34,19 @@ public class SettingActivity extends AppCompatActivity {
         StatusBarUtil.setColor(this,0x05ACED,0);
         settingActivity=this;
         iniWebView();
+    }
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        //改写物理返回键的逻辑
+        if(keyCode==KeyEvent.KEYCODE_BACK) {
+            if(webView.canGoBack()) {
+                webView.goBack();//返回上一页面
+                return true;
+            } else {
+               finish();
+            }
+        }
+        return super.onKeyDown(keyCode, event);
     }
     private void iniWebView() {
         webView = findViewById(R.id.webView);
