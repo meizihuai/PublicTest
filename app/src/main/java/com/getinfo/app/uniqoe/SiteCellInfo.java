@@ -41,8 +41,9 @@ public class SiteCellInfo {
         }
     }
 
-    public SiteCellInfo(List<CellInfo> allCellinfo, String getType) {
+    public SiteCellInfo(List<CellInfo> allCellinfo, String getType,int realCi) {
         if (allCellinfo == null) return;
+        boolean isHaveRealCi= realCi>0;
         Gson gsonTmp = new Gson();
         String tmp = gsonTmp.toJson(allCellinfo);
         SetAdjs(allCellinfo, getType);
@@ -59,14 +60,18 @@ public class SiteCellInfo {
                     this.TAC = jsonObject.getJSONObject("mCellIdentityGsm").getInt("mLac");
                     // this.PCI = jsonObject.getJSONObject("mCellIdentityGsm").getInt("mBsic");
                     this.FREQ = jsonObject.getJSONObject("mCellIdentityGsm").getInt("mArfcn");
-
 //                    this.RSRP = jsonObject.getJSONObject("mCellSignalStrengthGsm").getInt("mRsrp");
 //                    this.RSRQ = jsonObject.getJSONObject("mCellSignalStrengthGsm").getInt("mRsrq");
                     this.SINR = jsonObject.getJSONObject("mCellSignalStrengthGsm").getInt("mSignalStrength");
-
                     this.cellIdentity = "GSM";
                     ECI2eNodebId(this.ECI);
-                    return;
+                    if(isHaveRealCi){
+                        if(this.ECI==realCi){
+                            return;
+                        }
+                    }else{
+                        return;
+                    }
                 } catch (Exception e) {
 
                 }
@@ -87,7 +92,13 @@ public class SiteCellInfo {
 
                     this.cellIdentity = "WCDMA";
                     ECI2eNodebId(this.ECI);
-                    return;
+                    if(isHaveRealCi){
+                        if(this.ECI==realCi){
+                            return;
+                        }
+                    }else{
+                        return;
+                    }
                 } catch (Exception e) {
 
                 }
@@ -110,7 +121,13 @@ public class SiteCellInfo {
 
                     this.cellIdentity = "LTE";
                     ECI2eNodebId(this.ECI);
-                    return;
+                    if(isHaveRealCi){
+                        if(this.ECI==realCi){
+                            return;
+                        }
+                    }else{
+                        return;
+                    }
                 } catch (Exception e) {
 
                 }
@@ -132,7 +149,13 @@ public class SiteCellInfo {
 
                     this.cellIdentity = "CDMA";
                     ECI2eNodebId(this.ECI);
-                    return;
+                    if(isHaveRealCi){
+                        if(this.ECI==realCi){
+                            return;
+                        }
+                    }else{
+                        return;
+                    }
                 } catch (Exception e) {
 
                 }
@@ -140,6 +163,106 @@ public class SiteCellInfo {
         }
 
     }
+
+//    public SiteCellInfo(List<CellInfo> allCellinfo, String getType) {
+//        if (allCellinfo == null) return;
+//        Gson gsonTmp = new Gson();
+//        String tmp = gsonTmp.toJson(allCellinfo);
+//        SetAdjs(allCellinfo, getType);
+//        this.ADJ_SIGNAL = tmp;
+//        for (int i = 0; i < allCellinfo.size(); i++) {
+//            CellInfo cellInfo = allCellinfo.get(i);
+//            if (getType == "GSM" && cellInfo instanceof CellInfoGsm) {
+//                CellInfoGsm cellInfoGsm = (CellInfoGsm) cellInfo;
+//                Gson gson = new Gson();
+//                String json = gson.toJson(cellInfoGsm);
+//                try {
+//                    JSONObject jsonObject = new JSONObject(json);
+//                    this.ECI = jsonObject.getJSONObject("mCellIdentityGsm").getInt("mCid");
+//                    this.TAC = jsonObject.getJSONObject("mCellIdentityGsm").getInt("mLac");
+//                    // this.PCI = jsonObject.getJSONObject("mCellIdentityGsm").getInt("mBsic");
+//                    this.FREQ = jsonObject.getJSONObject("mCellIdentityGsm").getInt("mArfcn");
+//
+////                    this.RSRP = jsonObject.getJSONObject("mCellSignalStrengthGsm").getInt("mRsrp");
+////                    this.RSRQ = jsonObject.getJSONObject("mCellSignalStrengthGsm").getInt("mRsrq");
+//                    this.SINR = jsonObject.getJSONObject("mCellSignalStrengthGsm").getInt("mSignalStrength");
+//
+//                    this.cellIdentity = "GSM";
+//                    ECI2eNodebId(this.ECI);
+//                    return;
+//                } catch (Exception e) {
+//
+//                }
+//
+//            } else if (getType == "WCDMA" && cellInfo instanceof CellInfoWcdma) {
+//                CellInfoWcdma cellInfoWcdma = (CellInfoWcdma) cellInfo;
+//                Gson gson = new Gson();
+//                String json = gson.toJson(cellInfoWcdma);
+//                try {
+//                    JSONObject jsonObject = new JSONObject(json);
+//                    this.ECI = jsonObject.getJSONObject("mCellIdentityWcdma").getInt("mCid");
+//                    this.TAC = jsonObject.getJSONObject("mCellIdentityWcdma").getInt("mLac");
+//                    this.PCI = jsonObject.getJSONObject("mCellIdentityWcdma").getInt("mPci");
+//                    this.FREQ = jsonObject.getJSONObject("mCellIdentityWcdma").getInt("mUarfcn");
+////                    this.RSRP = jsonObject.getJSONObject("mCellSignalStrengthWcdma").getInt("mRsrp");
+////                    this.RSRQ = jsonObject.getJSONObject("mCellSignalStrengthWcdma").getInt("mRsrq");
+//                    this.SINR = jsonObject.getJSONObject("mCellSignalStrengthLte").getInt("mSignalStrength");
+//
+//                    this.cellIdentity = "WCDMA";
+//                    ECI2eNodebId(this.ECI);
+//                    return;
+//                } catch (Exception e) {
+//
+//                }
+//
+//            } else if (getType == "LTE" && cellInfo instanceof CellInfoLte) {
+//                CellInfoLte cellInfoLte = (CellInfoLte) cellInfo;
+//                Gson gson = new Gson();
+//                String json = gson.toJson(cellInfoLte);
+//                try {
+//                    JSONObject jsonObject = new JSONObject(json);
+//                    this.ECI = jsonObject.getJSONObject("mCellIdentityLte").getInt("mCi");
+//                    this.TAC = jsonObject.getJSONObject("mCellIdentityLte").getInt("mTac");
+//                    this.PCI = jsonObject.getJSONObject("mCellIdentityLte").getInt("mPci");
+//                    this.MNC = jsonObject.getJSONObject("mCellIdentityLte").getInt("mMnc");
+//                    this.FREQ = jsonObject.getJSONObject("mCellIdentityLte").getInt("mEarfcn");
+//
+//                    this.RSRP = jsonObject.getJSONObject("mCellSignalStrengthLte").getInt("mRsrp");
+//                    this.RSRQ = jsonObject.getJSONObject("mCellSignalStrengthLte").getInt("mRsrq");
+//                    this.SINR = jsonObject.getJSONObject("mCellSignalStrengthLte").getInt("mSignalStrength");
+//
+//                    this.cellIdentity = "LTE";
+//                    ECI2eNodebId(this.ECI);
+//                    return;
+//                } catch (Exception e) {
+//
+//                }
+//            } else if (getType == "CDMA" && cellInfo instanceof CellInfoCdma) {
+//                CellInfoCdma cellInfoCdma = (CellInfoCdma) cellInfo;
+//                Gson gson = new Gson();
+//                String json = gson.toJson(cellInfoCdma);
+//                try {
+//                    JSONObject jsonObject = new JSONObject(json);
+//                    this.ECI = jsonObject.getJSONObject("mCellIdentityCdma").getInt("mBasestationId");
+//                    this.TAC = jsonObject.getJSONObject("mCellIdentityCdma").getInt("mNetworkId");
+////                    this.PCI = jsonObject.getJSONObject("mCellIdentityCdma").getInt("mPci");
+////                    this.MNC = jsonObject.getJSONObject("mCellIdentityCdma").getInt("mMnc");
+//                    //this.FREQ = jsonObject.getJSONObject("mCellIdentityCdma").getInt("mEarfcn");
+//
+//                    this.RSRP = jsonObject.getJSONObject("mCellSignalStrengthCdma").getInt("mCdmaDbm");
+////                    this.RSRQ = jsonObject.getJSONObject("mCellSignalStrengthCdma").getInt("mRsrq");
+////                    this.SINR = jsonObject.getJSONObject("mCellSignalStrengthCdma").getInt("mSignalStrength");
+//
+//                    this.cellIdentity = "CDMA";
+//                    ECI2eNodebId(this.ECI);
+//                    return;
+//                } catch (Exception e) {
+//
+//                }
+//            }
+//        }
+//
+//    }
 
     private void SetAdjs(List<CellInfo> allCellinfo, String getType) {
         if (allCellinfo == null) return;
