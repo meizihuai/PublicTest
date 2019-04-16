@@ -59,6 +59,7 @@
         <activity
             android:name=".QoEVideoPlayerActivity"
             android:label="@string/title_activity_qo_evideo_player"
+            android:configChanges="screenSize|keyboardHidden|orientation"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".QoEVideoScoreActivity" />
         <activity

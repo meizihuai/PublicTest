@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#EBEBEB"
     tools:context=".FrmOneKeyTest">
 
 
@@ -14,7 +15,15 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_margin="5dp"
             android:orientation="vertical">
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/cardViewBak"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="0dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -44,7 +53,7 @@
                         android:layout_gravity="center"
                         android:layout_marginTop="0dp"
                         android:text="网络信息"
-                        android:textColor="@color/green"
+                        android:textColor="@color/titleColor"
                         android:textSize="17dp" />
 
                 </LinearLayout>
@@ -264,7 +273,15 @@
 
 
             </LinearLayout>
+            </android.support.v7.widget.CardView>
 
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/cardViewBak"
+                android:layout_marginTop="5dp"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="0dp">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -293,7 +310,7 @@
                         android:layout_gravity="center"
                         android:layout_marginTop="0dp"
                         android:text="业务测试"
-                        android:textColor="@color/green"
+                        android:textColor="@color/titleColor"
                         android:textSize="17dp" />
 
                 </LinearLayout>
@@ -424,7 +441,15 @@
                         android:textSize="12dp" />
                 </LinearLayout>
             </LinearLayout>
+            </android.support.v7.widget.CardView>
 
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/cardViewBak"
+                android:layout_marginTop="5dp"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="0dp">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -453,7 +478,7 @@
                         android:layout_gravity="center"
                         android:layout_marginTop="0dp"
                         android:text="手机信息"
-                        android:textColor="@color/green"
+                        android:textColor="@color/titleColor"
                         android:textSize="17dp" />
 
                 </LinearLayout>
@@ -562,7 +587,14 @@
 
                 </LinearLayout>
             </LinearLayout>
-
+            </android.support.v7.widget.CardView>
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/cardViewBak"
+                android:layout_marginTop="5dp"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="0dp">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -591,7 +623,7 @@
                         android:layout_gravity="center"
                         android:layout_marginTop="0dp"
                         android:text="综合评分"
-                        android:textColor="@color/green"
+                        android:textColor="@color/titleColor"
                         android:textSize="17dp" />
 
                 </LinearLayout>
@@ -623,6 +655,7 @@
 
 
             </LinearLayout>
+            </android.support.v7.widget.CardView>
 
             <LinearLayout
                 android:layout_width="match_parent"

@@ -12,6 +12,13 @@ public class QoEHTTPInfo {
     public int DOWNLOADSPEEDSCORE;   //下载速度的评分
     public int WHITESCREENTIMESCORE;   //白屏等待时间的评分
 
+    public int EVMOS;
+    public  int EWHITESCREENTIMESCORE;
+    public  int ERESPONSETIMESCORE;
+    public  int ETOTALBUFFERTIMESCORE;
+    public  String HTTPURL;
+
+
     public long RESPONSETIME;   //HTTP响应时间
     public long TOTALBUFFERTIME;   //总缓冲时间
     public long DNSTIME;   //DNS解析时间

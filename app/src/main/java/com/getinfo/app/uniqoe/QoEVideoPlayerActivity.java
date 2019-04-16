@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -67,6 +68,7 @@ public class QoEVideoPlayerActivity extends AppCompatActivity {
     private Date stallStartTime;
     private Long stallStartTimeInt;
     private boolean isStalling = false;
+    private boolean isPhoneVertical;
 
     private long downloadVideoFileSize = 0;
     private List<Integer> bufferPercentList;
@@ -109,8 +111,10 @@ public class QoEVideoPlayerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qo_evideo_player);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
+        Log.i("QoEVideoPlayerStart", "===================");
+        Log.i("QoEVideoPlayerStart", "onCreate");
+      //  setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        isPhoneVertical=DeviceHelper.isPhoneVertical(this);
         StatusBarUtil.setColor(this, 0x27292E, 0);
         Intent getIntent = getIntent();
         String piJson = getIntent.getStringExtra("piJson");
@@ -233,6 +237,8 @@ public class QoEVideoPlayerActivity extends AppCompatActivity {
     }
 
     private void init() {
+        LinearLayout divInfo=findViewById(R.id.divInfo);
+        divInfo.bringToFront();
         Button btnNext = findViewById(R.id.btnNext);
         myWatchTimes = findViewById(R.id.myWatchTimes);
         btnNext.setOnClickListener(new View.OnClickListener() {
@@ -693,6 +699,7 @@ public class QoEVideoPlayerActivity extends AppCompatActivity {
             Log.i("UploadQoEVideo", json);
             QoEVideoScoreActivity qoEVideoScoreActivity = new QoEVideoScoreActivity();
             Intent intent = new Intent(this, qoEVideoScoreActivity.getClass());
+            intent.putExtra("ScoreKind", "QoEVideo");
             intent.putExtra("QoEVideoInfo", json);
             startActivity(intent);
             // StartPlayVideo();
@@ -708,7 +715,18 @@ public class QoEVideoPlayerActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        Log.i("QoEVideoPlayerStart", "onResume");
+
+
+        boolean isNowPhone=DeviceHelper.isPhoneVertical(this);
+        if(isNowPhone!=isPhoneVertical){
+            String oldStatus=isPhoneVertical?"竖屏":"横屏";
+            String newStatus=isNowPhone?"竖屏":"横屏";
+            Log.i("QoEVideoPlayerStart", "onResume,旧状态:"+oldStatus+"  新状态:"+newStatus);
+            isPhoneVertical=isNowPhone;
+            //return;
+        }
+        String phoneStatus=isPhoneVertical?"竖屏":"横屏";
+        Log.i("QoEVideoPlayerStart", "onResume,手机状态:"+phoneStatus);
         if (isInit) {
             Log.i("QoEVideoPlayerStart", "StartPlayVideo");
             if (!isAskforScreenRecord) {
@@ -727,6 +745,7 @@ public class QoEVideoPlayerActivity extends AppCompatActivity {
     @Override
     public void onPause() {
         super.onPause();
+        Log.i("QoEVideoPlayerStart", "onPause");
         mMediaController.getWindow().dismiss();
         mVideoView.pause();
     }
@@ -734,6 +753,7 @@ public class QoEVideoPlayerActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Log.i("QoEVideoPlayerStart", "onDestroy");
         flag_isPlayOver = true;
         mVideoView.stopPlayback();
     }

@@ -5,6 +5,7 @@ import android.telephony.CellInfoGsm;
 import android.telephony.CellInfoLte;
 import android.telephony.CellInfoWcdma;
 import android.telephony.CellInfo;
+import android.util.Log;
 
 import com.google.gson.Gson;
 
@@ -107,13 +108,26 @@ public class SiteCellInfo {
                 CellInfoLte cellInfoLte = (CellInfoLte) cellInfo;
                 Gson gson = new Gson();
                 String json = gson.toJson(cellInfoLte);
+                Log.i("SiteCellInfo",json);
+                String kkk="";
                 try {
                     JSONObject jsonObject = new JSONObject(json);
                     this.ECI = jsonObject.getJSONObject("mCellIdentityLte").getInt("mCi");
                     this.TAC = jsonObject.getJSONObject("mCellIdentityLte").getInt("mTac");
                     this.PCI = jsonObject.getJSONObject("mCellIdentityLte").getInt("mPci");
-                    this.MNC = jsonObject.getJSONObject("mCellIdentityLte").getInt("mMnc");
+                    //  this.MNC =Integer.parseInt(cellInfoLte.getCellIdentity().getMncString());
                     this.FREQ = jsonObject.getJSONObject("mCellIdentityLte").getInt("mEarfcn");
+                    try{
+                        this.MNC = jsonObject.getJSONObject("mCellIdentityLte").getInt("mMncStr");
+                    }catch (Exception e){
+                        try{
+                            this.MNC = jsonObject.getJSONObject("mCellIdentityLte").getInt("mMnc");
+                        }catch (Exception e2){
+
+                        }
+                    }
+
+                    // this.FREQ = cellInfoLte.getCellIdentity().getEarfcn();
 
                     this.RSRP = jsonObject.getJSONObject("mCellSignalStrengthLte").getInt("mRsrp");
                     this.RSRQ = jsonObject.getJSONObject("mCellSignalStrengthLte").getInt("mRsrq");
@@ -129,7 +143,7 @@ public class SiteCellInfo {
                         return;
                     }
                 } catch (Exception e) {
-
+                    Log.i("SiteCellInfo",e.getMessage());
                 }
             } else if (getType == "CDMA" && cellInfo instanceof CellInfoCdma) {
                 CellInfoCdma cellInfoCdma = (CellInfoCdma) cellInfo;

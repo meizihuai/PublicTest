@@ -23,6 +23,7 @@ import java.util.List;
 public class QoEVideoScoreActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "QoEVideoScoreActivity";
     private QoEVideoInfo qoEVideoInfo;
+    private QoEHTTPInfo qoEHTTPInfo;
     private LinearLayout iv_rating_div_1, iv_rating_div_2, iv_rating_div_3, iv_rating_div_4, iv_rating_div_5;
     private LinearLayout iv_qx_div_1, iv_qx_div_2, iv_qx_div_3, iv_qx_div_4, iv_qx_div_5;
     private LinearLayout iv_qd_div_1, iv_qd_div_2, iv_qd_div_3, iv_qd_div_4, iv_qd_div_5;//启动速度
@@ -41,6 +42,7 @@ public class QoEVideoScoreActivity extends AppCompatActivity implements View.OnC
     private int ELOAD = 0;//启动速度打分
     private int ESTALL = 0;//流畅速度打分
     private boolean flagSubmited = false;
+    private String scoreKind;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,9 +51,19 @@ public class QoEVideoScoreActivity extends AppCompatActivity implements View.OnC
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         StatusBarUtil.setColor(this, 0x05ACED, 0);
         Intent getIntent = getIntent();
-        String qoEVideoInfoJson = getIntent.getStringExtra("QoEVideoInfo");
-        Gson gson = new Gson();
-        qoEVideoInfo = gson.fromJson(qoEVideoInfoJson, QoEVideoInfo.class);
+        scoreKind= getIntent.getStringExtra("ScoreKind");
+        if(scoreKind.equals("QoEVideo")){
+            String qoEVideoInfoJson = getIntent.getStringExtra("QoEVideoInfo");
+            Gson gson = new Gson();
+            qoEVideoInfo = gson.fromJson(qoEVideoInfoJson, QoEVideoInfo.class);
+        }
+        if(scoreKind.equals("QoEHTTP")){
+            String qoEHTTPInfoJson = getIntent.getStringExtra("QoEHTTPInfo");
+            Gson gson = new Gson();
+            qoEHTTPInfo = gson.fromJson(qoEHTTPInfoJson, QoEHTTPInfo.class);
+
+        }
+
         init();
         WaitForSubmit();
     }
@@ -89,6 +101,17 @@ public class QoEVideoScoreActivity extends AppCompatActivity implements View.OnC
         tv_commit = (TextView) findViewById(R.id.tv_commit);
         tv_commit.setOnClickListener(this);
         tv_commit.setVisibility(View.INVISIBLE);
+
+        if(scoreKind.equals("QoEHTTP")) {
+            TextView tv_qidong=findViewById(R.id.tv_qidong);
+            TextView tv_liuchangdu=findViewById(R.id.tv_liuchangdu);
+            TextView tv_qingxidu=findViewById(R.id.tv_qingxidu);
+            tv_qidong.setText("白屏时间评分");
+            tv_liuchangdu.setText("页面响应评分");
+            tv_qingxidu.setText("整体加载评分");
+        }
+
+
 
         listRating = new ArrayList<>();
         listqx = new ArrayList<>();
@@ -457,20 +480,50 @@ public class QoEVideoScoreActivity extends AppCompatActivity implements View.OnC
 
     private void btnCommitOnClick() {
         if (EVMOS == 0) { //顶部打分
-            MsgBox("请给出顶部总评分，谢谢！");
+            String str="请给出顶部总评分，谢谢！";
+            if(scoreKind.equals("QoEHTTP")) {
+                str="请给出顶部总评分，谢谢！";
+            }
+            MsgBox(str);
             return;
         }
         if (ECLATIRY == 0) { //清晰度打分
-            MsgBox("请给清晰程度评分，谢谢！");
+            String str="请给清晰程度评分，谢谢！";
+            if(scoreKind.equals("QoEHTTP")) {
+                str="请给出白屏时间评分，谢谢！";
+            }
+            MsgBox(str);
             return;
         }
         if (ELOAD == 0) { //启动速度打分
-            MsgBox("请给启动速度评分，谢谢！");
+            String str="请给加载速度评分，谢谢！";
+            if(scoreKind.equals("QoEHTTP")) {
+                str="请给出页面响应评分，谢谢！";
+            }
+            MsgBox(str);
             return;
         }
         if (ESTALL == 0) {  //流畅速度打分
-            MsgBox("请给流畅速度评分，谢谢！");
+            String str="请给流畅速度评分，谢谢！";
+            if(scoreKind.equals("QoEHTTP")) {
+                str="请给出整体加载评分，谢谢！";
+            }
+            MsgBox(str);
             return;
+        }
+        if(scoreKind.equals("QoEVideo")) {
+            qoEVideoInfo.ECLATIRY = ECLATIRY;
+            qoEVideoInfo.ELOAD = ELOAD;
+            qoEVideoInfo.ESTALL = ESTALL;
+            qoEVideoInfo.EVMOS = EVMOS;
+            qoEVideoInfo.ELIGHT = 0;
+            qoEVideoInfo.ESTATE = 0;
+        }
+        if(scoreKind.equals("QoEHTTP")) {
+            qoEHTTPInfo.EVMOS=EVMOS;
+            qoEHTTPInfo.EWHITESCREENTIMESCORE=ELOAD;
+            qoEHTTPInfo.ERESPONSETIMESCORE=ESTALL;
+            qoEHTTPInfo.ETOTALBUFFERTIMESCORE=ECLATIRY;
         }
 //        public int USER_SCORE;    //用户分值
 //        public int VMOS;    //VMOS
@@ -481,12 +534,7 @@ public class QoEVideoScoreActivity extends AppCompatActivity implements View.OnC
 //        public int ELIGHT;    ///*环境光照对视频观看的影响程度(5：无影响，4：较小影响，3：有一定影响，2：较大影响，1：极大影响）*/
 //        public int ESTATE;    ///*用户对运动状态的反馈(:4：静止不动，3：偶尔走动，2：持续走动，1：交通工具上)*/
         //clarity
-        qoEVideoInfo.ECLATIRY = ECLATIRY;
-        qoEVideoInfo.ELOAD = ELOAD;
-        qoEVideoInfo.ESTALL = ESTALL;
-        qoEVideoInfo.EVMOS = EVMOS;
-        qoEVideoInfo.ELIGHT = 0;
-        qoEVideoInfo.ESTATE = 0;
+
         Submit();
         MsgBox("您的评分已提交！谢谢您！");
         finish();
@@ -514,8 +562,14 @@ public class QoEVideoScoreActivity extends AppCompatActivity implements View.OnC
 
     public void Submit() {
         if (flagSubmited) return;
-        UploadDataHelper uploadDataHelper = UploadDataHelper.getInstance();
-        uploadDataHelper.UploadDataToServer(qoEVideoInfo);
+        if(scoreKind.equals("QoEVideo")){
+            UploadDataHelper uploadDataHelper = UploadDataHelper.getInstance();
+            uploadDataHelper.UploadDataToServer(qoEVideoInfo);
+        }
+        if(scoreKind.equals("QoEHTTP")){
+            UploadDataHelper uploadDataHelper = UploadDataHelper.getInstance();
+            uploadDataHelper.UploadObjectToServer(qoEHTTPInfo, "QoEHTTPInfo");
+        }
         flagSubmited = true;
     }
 

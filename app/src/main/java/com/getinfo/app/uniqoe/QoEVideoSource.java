@@ -75,7 +75,7 @@ public class QoEVideoSource {
                 try {
                     JSONObject jsonObject = new JSONObject(result);
                     boolean flag = jsonObject.getBoolean("result");
-                    Log.i("getVideoSource","flag="+flag);
+                    Log.i("getVideoSource","flag="+flag+"  请求耗时="+jsonObject.getString("errmsg"));
                     if (flag) {
                         try{
                             Gson gson=new Gson();

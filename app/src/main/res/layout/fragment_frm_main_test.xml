@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#EBEBEB"
     tools:context=".FrmMainTest">
 
     <ScrollView
@@ -103,7 +104,7 @@
                 android:layout_height="wrap_content"
                 app:cardBackgroundColor="@color/cardViewBak"
                 app:cardCornerRadius="10dp"
-                app:cardElevation="5dp">
+                app:cardElevation="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -155,7 +156,7 @@
                 android:layout_marginTop="10dp"
                 app:cardBackgroundColor="@color/cardViewBak"
                 app:cardCornerRadius="10dp"
-                app:cardElevation="5dp">
+                app:cardElevation="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -230,7 +231,7 @@
                 android:layout_marginTop="10dp"
                 app:cardBackgroundColor="@color/cardViewBak"
                 app:cardCornerRadius="10dp"
-                app:cardElevation="5dp">
+                app:cardElevation="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -372,7 +373,7 @@
                 android:layout_marginTop="10dp"
                 app:cardBackgroundColor="@color/cardViewBak"
                 app:cardCornerRadius="10dp"
-                app:cardElevation="5dp">
+                app:cardElevation="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -401,6 +402,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
+                            android:textColor="@color/mainTxt"
                             android:gravity="center"
                             android:textSize="8dp" />
                     </LinearLayout>
@@ -414,10 +416,11 @@
                 android:layout_marginTop="10dp"
                 app:cardBackgroundColor="@color/cardViewBak"
                 app:cardCornerRadius="10dp"
-                app:cardElevation="5dp">
+                app:cardElevation="0dp">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:textColor="@color/mainTxt"
                     android:orientation="vertical">
 
                     <TextView
@@ -434,6 +437,7 @@
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
                         android:gravity="center"
+                        android:textColor="@color/mainTxt"
                         android:orientation="vertical">
 
                         <com.bin.david.form.core.SmartTable
@@ -442,6 +446,7 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
+                            android:textColor="@color/mainTxt"
                             android:textSize="8dp" />
                     </LinearLayout>
 

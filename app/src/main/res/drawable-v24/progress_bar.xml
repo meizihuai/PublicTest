@@ -5,14 +5,14 @@
         <shape>
             <corners android:radius="5dip"/>
             <solid android:color="@color/white"/>
-            <stroke android:color="@color/green" android:width="1px"/>
+            <stroke android:color="@color/titleColor" android:width="1px"/>
         </shape>
     </item>
     <item android:id="@android:id/progress">
         <clip>
             <shape>
                 <corners android:radius="5dip"/>
-                <solid android:color="@color/green"/>
+                <solid android:color="@color/titleColor"/>
             </shape>
         </clip>
     </item>

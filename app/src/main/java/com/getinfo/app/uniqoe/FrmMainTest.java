@@ -56,7 +56,7 @@ public class FrmMainTest extends Fragment {
         cellSigNalInfoListTable = (SmartTable<CellSigNalInfo>) myView.findViewById(R.id.cellSigNalInfoListTable);
         FontStyle fontStyle = new FontStyle(40, Color.WHITE);
         fontStyle = neighbourListTable.getConfig().getContentStyle();
-        fontStyle.setTextColor(Color.WHITE);
+        fontStyle.setTextColor(Color.parseColor("#708090"));
         neighbourListTable.getConfig().setContentStyle(fontStyle);
         neighbourListTable.getConfig().setYSequenceStyle(fontStyle);
         neighbourListTable.getConfig().setXSequenceStyle(fontStyle);

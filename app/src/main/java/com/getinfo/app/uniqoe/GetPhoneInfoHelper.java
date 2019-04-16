@@ -309,6 +309,7 @@ public class GetPhoneInfoHelper {
         if (PI == null) PI = new PhoneInfo();
         String IMSI = tm.getSubscriberId();
         String IMEI = tm.getDeviceId();
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             IMEI=tm.getImei();
         }
@@ -376,6 +377,12 @@ public class GetPhoneInfoHelper {
                 PI.SINR = siteCellInfo.SINR;
                 PI.EARFCN=siteCellInfo.FREQ;
                 PI.PCI=siteCellInfo.PCI;
+
+                PI.Adj_ECI1 = siteCellInfo.Adj_ECI1;
+                PI.Adj_RSRP1 = siteCellInfo.Adj_RSRP1;
+                PI.Adj_SINR1 = siteCellInfo.Adj_SINR1;
+                PI.ADJ_SIGNAL = siteCellInfo.ADJ_SIGNAL;
+
             }
             if (PI.carrier != "中国电信" && PI.CI==0) {
                 Log.i("newrsrpErr","step=1");

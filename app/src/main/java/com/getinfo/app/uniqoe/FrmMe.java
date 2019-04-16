@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.getinfo.app.uniqoe.utils.HTTPHelper;
+import com.getinfo.app.uniqoe.utils.MultipleClick;
 import com.getinfo.app.uniqoe.utils.NormalResponse;
 import com.google.gson.Gson;
 
@@ -36,13 +37,14 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+
 //"我的"页面 包含手机基本信息、个人设置、app更新等
 public class FrmMe extends Fragment {
-    private  boolean isFirstSelectedServerUrl=true;
-    private TextView txtPhoneModel, txtphoneOS, txtIMSI, txtIMEI,txtBonusPoints,txtAID;
+    private boolean isFirstSelectedServerUrl = true;
+    private TextView txtPhoneModel, txtphoneOS, txtIMSI, txtIMEI, txtBonusPoints, txtAID;
     private LinearLayout divPhoneOS;
-    private int divPhoneOSClickTime=0;
-    private long divPhoneOSClickms=System.currentTimeMillis();
+    private int divPhoneOSClickTime = 0;
+    private long divPhoneOSClickms = System.currentTimeMillis();
     private View myView;
     private String apkUrl;
 
@@ -53,11 +55,11 @@ public class FrmMe extends Fragment {
     private String updateUrl = "http://221.238.40.153:7062/default.ashx"; //app更新功能服务器
 
     private String imei = "";
-    private Button  btnMission,btnAbout;
+    private Button btnMission, btnAbout;
 
-   // private Button btnCheckUpdate, btnGetUpdate;
+    // private Button btnCheckUpdate, btnGetUpdate;
     private TextView txtLocalVersion;
-    private Switch switchQoEScore,switchQoEScreenRecord;
+    private Switch switchQoEScore, switchQoEScreenRecord;
     private OnFragmentInteractionListener mListener;
 
     public FrmMe() {
@@ -89,7 +91,7 @@ public class FrmMe extends Fragment {
         txtphoneOS = myView.findViewById(R.id.txtphoneOS);
         txtIMSI = myView.findViewById(R.id.txtIMSI);
         txtIMEI = myView.findViewById(R.id.txtIMEI);
-        txtBonusPoints=myView.findViewById(R.id.txtBonusPoints);
+        txtBonusPoints = myView.findViewById(R.id.txtBonusPoints);
         txtBonusPoints.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,14 +99,14 @@ public class FrmMe extends Fragment {
             }
         });
         switchQoEScore = myView.findViewById(R.id.switchQoESocre);
-        switchQoEScreenRecord=myView.findViewById(R.id.switchQoEScreenRecord);
+        switchQoEScreenRecord = myView.findViewById(R.id.switchQoEScreenRecord);
         Setting tmpSetting = GlobalInfo.getSetting(getContext());
         if (tmpSetting != null) {
-            Log.i("setSetting","tmpSetting.switchQoEScore="+tmpSetting.switchQoEScore);
+            Log.i("setSetting", "tmpSetting.switchQoEScore=" + tmpSetting.switchQoEScore);
             switchQoEScore.setChecked(tmpSetting.switchQoEScore);
             switchQoEScreenRecord.setChecked(tmpSetting.switchQoEScreenRecord);
-        }else{
-            Log.i("setSetting","tmpSetting is null");
+        } else {
+            Log.i("setSetting", "tmpSetting is null");
         }
 
         switchQoEScore.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -112,7 +114,7 @@ public class FrmMe extends Fragment {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Setting setting = GlobalInfo.getSetting(getContext());
                 setting.switchQoEScore = isChecked;
-                Log.i("setSetting","switchQoEScore.isChecked="+isChecked);
+                Log.i("setSetting", "switchQoEScore.isChecked=" + isChecked);
                 GlobalInfo.setSetting(getContext(), setting);
             }
         });
@@ -121,7 +123,7 @@ public class FrmMe extends Fragment {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Setting setting = GlobalInfo.getSetting(getContext());
                 setting.switchQoEScreenRecord = isChecked;
-                Log.i("setSetting","switchQoEScreenRecord.isChecked="+isChecked);
+                Log.i("setSetting", "switchQoEScreenRecord.isChecked=" + isChecked);
                 GlobalInfo.setSetting(getContext(), setting);
             }
         });
@@ -151,8 +153,8 @@ public class FrmMe extends Fragment {
 //                du.download(uri, appName, dirName);
 //            }
 //        });
-        btnAbout=myView.findViewById(R.id.btnAbout);
-      //  btnAbout.setText("关于 UniQoE");totast
+        btnAbout = myView.findViewById(R.id.btnAbout);
+        //  btnAbout.setText("关于 UniQoE");totast
         btnAbout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -170,65 +172,73 @@ public class FrmMe extends Fragment {
                 startActivity(intent);
             }
         });
-        divPhoneOS=myView.findViewById(R.id.divPhoneOS);
-        divPhoneOS.setOnClickListener(new View.OnClickListener() {
+        divPhoneOS = myView.findViewById(R.id.divPhoneOS);
+        MultipleClick multipleClick = new MultipleClick();
+        multipleClick.multipleClick(3, 500, divPhoneOS, new MultipleClick.MultipleClickBack() {
             @Override
-            public void onClick(View v) {
-                long cms=System.currentTimeMillis();
-                if(cms-divPhoneOSClickms>1000){
-                    divPhoneOSClickTime=0;
-                }
-                divPhoneOSClickms=System.currentTimeMillis();
-                divPhoneOSClickTime++;
-                if(divPhoneOSClickTime==4){
-                    divPhoneOSClickTime=0;
-                    String str="IMEI:"+GlobalInfo.myDeviceImei+" IMSI:"+GlobalInfo.myDeviceImsi;
-                    Toast.makeText(getContext(),str, Toast.LENGTH_LONG).show();
-                }
+            public void doBack() {
+                String str = "IMEI:" + GlobalInfo.myDeviceImei + " IMSI:" + GlobalInfo.myDeviceImsi;
+                Toast.makeText(getContext(), str, Toast.LENGTH_LONG).show();
             }
         });
+//        divPhoneOS.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                long cms=System.currentTimeMillis();
+//                if(cms-divPhoneOSClickms>1000){
+//                    divPhoneOSClickTime=0;
+//                }
+//                divPhoneOSClickms=System.currentTimeMillis();
+//                divPhoneOSClickTime++;
+//                if(divPhoneOSClickTime==4){
+//                    divPhoneOSClickTime=0;
+//                    String str="IMEI:"+GlobalInfo.myDeviceImei+" IMSI:"+GlobalInfo.myDeviceImsi;
+//                    Toast.makeText(getContext(),str, Toast.LENGTH_LONG).show();
+//                }
+//            }
+//        });
         CheckCanUpdate();
         CheckDevicePermission();
         return myView;
     }
 
     private void iniSpinner() {
-      //  iniSpinnerVideoType();
+        //  iniSpinnerVideoType();
         final List<String> data_list;
         ArrayAdapter<String> arr_adapter;
         data_list = new ArrayList<String>();
         data_list.add("111服务器");
         data_list.add("221服务器");
         final List<String> serverList;
-        serverList=new ArrayList<String>();
+        serverList = new ArrayList<String>();
         serverList.add("http://111.53.74.132:7062/default.ashx");
         serverList.add("http://221.238.40.153:7062/default.ashx");
-        Spinner spinner=myView.findViewById(R.id.spinner_serverUrl);
+        Spinner spinner = myView.findViewById(R.id.spinner_serverUrl);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selectItm=data_list.get(position);
-                if(isFirstSelectedServerUrl){
-                    isFirstSelectedServerUrl=false;
+                String selectItm = data_list.get(position);
+                if (isFirstSelectedServerUrl) {
+                    isFirstSelectedServerUrl = false;
                     return;
                 }
-                String serverUrl=serverList.get(position);
+                String serverUrl = serverList.get(position);
                 Setting setting = GlobalInfo.getSetting(getContext());
-                setting.serverUrl=serverUrl;
+                setting.serverUrl = serverUrl;
                 UploadDataHelper.getInstance().setServerURL(serverUrl);
                 GlobalInfo.setSetting(getContext(), setting);
-               // Toast.makeText(getContext(),selectItm+"设置成功", Toast.LENGTH_SHORT).show();
+                // Toast.makeText(getContext(),selectItm+"设置成功", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                Toast.makeText(getContext(),"您没有选择任何项目！", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "您没有选择任何项目！", Toast.LENGTH_SHORT).show();
             }
         });
 
 
         //适配器
-        arr_adapter= new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, data_list);
+        arr_adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, data_list);
         //设置样式
         arr_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         //加载适配器
@@ -236,11 +246,11 @@ public class FrmMe extends Fragment {
 
         Setting tmpSetting = GlobalInfo.getSetting(getContext());
         if (tmpSetting != null) {
-            String serverUrl=tmpSetting.serverUrl;
-            int selectIndex=0;
-            for(int i=0;i<serverList.size();i++){
-                if(serverUrl.equals(serverList.get(i))){
-                    selectIndex=i;
+            String serverUrl = tmpSetting.serverUrl;
+            int selectIndex = 0;
+            for (int i = 0; i < serverList.size(); i++) {
+                if (serverUrl.equals(serverList.get(i))) {
+                    selectIndex = i;
                     break;
                 }
             }
@@ -248,7 +258,8 @@ public class FrmMe extends Fragment {
         }
 
     }
-    public void iniSpinnerVideoType( final List<String> data_list){
+
+    public void iniSpinnerVideoType(final List<String> data_list) {
 
         ArrayAdapter<String> arr_adapter;
 //        final List<String> data_list;
@@ -261,27 +272,27 @@ public class FrmMe extends Fragment {
 //        data_list.add("电影");
 //        data_list.add("音乐");
 
-        Spinner spinner=myView.findViewById(R.id.spinner_videoType);
+        Spinner spinner = myView.findViewById(R.id.spinner_videoType);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selectItm=data_list.get(position);
+                String selectItm = data_list.get(position);
                 Setting setting = GlobalInfo.getSetting(getContext());
-                setting.videoWantType=selectItm;
-                QoEVideoSource.wantType=selectItm;
+                setting.videoWantType = selectItm;
+                QoEVideoSource.wantType = selectItm;
                 GlobalInfo.setSetting(getContext(), setting);
-              //  Toast.makeText(getContext(),selectItm+"设置成功", Toast.LENGTH_SHORT).show();
+                //  Toast.makeText(getContext(),selectItm+"设置成功", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                Toast.makeText(getContext(),"您没有选择任何项目！", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "您没有选择任何项目！", Toast.LENGTH_SHORT).show();
             }
         });
 
 
         //适配器
-        arr_adapter= new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, data_list);
+        arr_adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, data_list);
         //设置样式
         arr_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         //加载适配器
@@ -289,25 +300,26 @@ public class FrmMe extends Fragment {
 
         Setting tmpSetting = GlobalInfo.getSetting(getContext());
         if (tmpSetting != null) {
-            String serverUrl=tmpSetting.serverUrl;
-            int selectIndex=0;
-            for(int i=0;i<data_list.size();i++){
-                if(serverUrl.equals(data_list.get(i))){
-                    selectIndex=i;
+            String serverUrl = tmpSetting.serverUrl;
+            int selectIndex = 0;
+            for (int i = 0; i < data_list.size(); i++) {
+                if (serverUrl.equals(data_list.get(i))) {
+                    selectIndex = i;
                     break;
                 }
             }
             spinner.setSelection(selectIndex);
         }
     }
+
     //获取本设备的执行权限，目前权限为9的设备可以打开任务管理模块
     private void CheckDevicePermission() {
-        Setting tmpSetting=GlobalInfo.getSetting(getContext());
-        String urlTmp=GlobalInfo.defaultServerUrl;
-        if(tmpSetting!=null){
-            urlTmp=GlobalInfo.getSetting(getContext()).serverUrl;
+        Setting tmpSetting = GlobalInfo.getSetting(getContext());
+        String urlTmp = GlobalInfo.defaultServerUrl;
+        if (tmpSetting != null) {
+            urlTmp = GlobalInfo.getSetting(getContext()).serverUrl;
         }
-        final String serverUrl=urlTmp;
+        final String serverUrl = urlTmp;
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -472,6 +484,7 @@ public class FrmMe extends Fragment {
             }
         }).start();
     }
+
     //主进程发过来PhoneInfo
     public void OnRecivePhoneInfo(PhoneInfo pi) {
         try {
@@ -483,21 +496,22 @@ public class FrmMe extends Fragment {
 
         }
     }
-    public void SetMyAID(String aid){
-        txtAID=myView.findViewById(R.id.txtAID);
+
+    public void SetMyAID(String aid) {
+        txtAID = myView.findViewById(R.id.txtAID);
         txtAID.setText(aid);
     }
 
-    public void GetMyBonusPoints(){
-        String url=GlobalInfo.defaultServerUrl + "?func=GetMyBonusPoints&imsi=" + GlobalInfo.myDeviceImsi;
+    public void GetMyBonusPoints() {
+        String url = GlobalInfo.defaultServerUrl + "?func=GetMyBonusPoints&imsi=" + GlobalInfo.myDeviceImsi;
         HTTPHelper.GetH(url, new HTTPHelper.HTTPResponse() {
             @Override
             public void OnNormolResponse(NormalResponse np) {
-                Gson gson=new Gson();
-                String result=gson.toJson(np);
-                Log.i("GetMyBonusPoints",result);
-                if(np.result){
-                    String str=np.data.toString()+" 分 [点击刷新]";
+                Gson gson = new Gson();
+                String result = gson.toJson(np);
+                Log.i("GetMyBonusPoints", result);
+                if (np.result) {
+                    String str = np.data.toString() + " 分 [点击刷新]";
                     txtBonusPoints.setText(str);
                 }
             }

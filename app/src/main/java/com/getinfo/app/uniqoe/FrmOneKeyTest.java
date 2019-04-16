@@ -1105,6 +1105,7 @@ public class FrmOneKeyTest extends Fragment {
     //对测试出来的QOEHTTP结果进行总结
     private void HandleQoEHTTP(QoEHTTPInfo qoEHTTPInfo) {
         qoEHTTPInfo.DATETIME = GetSystemTime();
+        qoEHTTPInfo.pi.businessType="OneKeyTest";
         long RESPONSETIME = 0;
         long TOTALBUFFERTIME = 0;
         long DNSTIME = 0;

@@ -43,6 +43,9 @@ import com.google.gson.Gson;
 
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
@@ -161,6 +164,7 @@ public class MainActivity extends AppCompatActivity implements FrmMainTest.OnFra
         setContentView(R.layout.activity_main);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);    //竖屏
         //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);  //横屏
+        closeAndroidPDialog();
 
         StatusBarUtil.setColor(this, 0x05ACED, 0);  //设置状态栏颜色，保持沉浸
         try {
@@ -198,7 +202,26 @@ public class MainActivity extends AppCompatActivity implements FrmMainTest.OnFra
         askMultiplePermission();  //开始申请权限
         // TestThread();
     }
-
+    private void closeAndroidPDialog(){
+        try {
+            Class aClass = Class.forName("android.content.pm.PackageParser$Package");
+            Constructor declaredConstructor = aClass.getDeclaredConstructor(String.class);
+            declaredConstructor.setAccessible(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            Class cls = Class.forName("android.app.ActivityThread");
+            Method declaredMethod = cls.getDeclaredMethod("currentActivityThread");
+            declaredMethod.setAccessible(true);
+            Object activityThread = declaredMethod.invoke(null);
+            Field mHiddenApiWarningShown = cls.getDeclaredField("mHiddenApiWarningShown");
+            mHiddenApiWarningShown.setAccessible(true);
+            mHiddenApiWarningShown.setBoolean(activityThread, true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     public void closeAll() {
         this.finish();
     }

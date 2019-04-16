@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="mainTxt">#ffffff</color>
-
+    <color name="mainTxt">#708090</color>
+    <!--#ffffff-->
     <!--#7B72E9-->
     <!--#05ACED-->
-    <color name="cardViewBak">#05ACED</color>
+    <!--#05ACED-->
+    <color name="cardViewBak">#ffffff</color>
     <color name="black_overlay">#66000000</color>
     <color name="titleColor">#05ACED</color>
     <color name="top_bg">#00a0e9</color>
