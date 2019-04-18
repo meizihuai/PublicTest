@@ -25,4 +25,16 @@ public class Utils {
     public static void showToastTips(final Context context, final String tips) {
         Toast.makeText(context, tips, Toast.LENGTH_SHORT).show();
     }
+    /**
+     * Toast弹窗
+     * @param context
+     * @param msg
+     * @param showTime 0表示短，1表示长
+     */
+    public static void  MsgBox(Context context,String msg,int showTime){
+        if(showTime!=0){
+            showTime=1;
+        }
+        Toast.makeText(context, msg, showTime).show();
+    }
 }

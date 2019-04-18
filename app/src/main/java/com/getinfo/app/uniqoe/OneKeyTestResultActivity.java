@@ -6,17 +6,21 @@ import android.content.pm.ActivityInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.getinfo.sdk.qoemaster.GlobalInfo;
+import com.getinfo.sdk.qoemaster.OneKeyTestInfo;
 import com.google.gson.Gson;
 
 public class OneKeyTestResultActivity extends AppCompatActivity {
-    private  OneKeyTestInfo oneKeyTestInfo=null;
+    private OneKeyTestInfo oneKeyTestInfo=null;
     private TextView txtTime,txtNetType,txtNetSpeedTestSpeed,txtNetSpeedScore,txtVideoSpeed,txtVideoScore,txtHttpResonseTime,txtHttpScore,txtTotalScore;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_one_key_test_result);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         StatusBarUtil.setColor(this,0x05ACED,0);  //设置状态栏颜色，保持沉浸
@@ -57,7 +61,7 @@ public class OneKeyTestResultActivity extends AppCompatActivity {
 
     }
     private void ShowInfo(){
-        txtTime.setText(GlobalInfo.GetSystemTime());
+        txtTime.setText(GlobalInfo.getSystemTime());
         txtNetType.setText(oneKeyTestInfo.pi.netType);
         double mbps=((double)oneKeyTestInfo.netSpeedTestSpeed*8/1000);
         txtNetSpeedTestSpeed.setText(String.format("%.2f",mbps)+" Mbps");

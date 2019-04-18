@@ -2,7 +2,6 @@ package com.getinfo.app.uniqoe;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
 import android.os.Handler;
@@ -15,21 +14,26 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.getinfo.app.uniqoe.utils.AudioRecordHelper;
 import com.getinfo.app.uniqoe.utils.Config;
-import com.getinfo.app.uniqoe.utils.DeviceHelper;
-import com.getinfo.app.uniqoe.utils.InterfaceCls;
-import com.getinfo.app.uniqoe.utils.LocationInfo;
 import com.getinfo.app.uniqoe.utils.ScreenRecordUploadHelper;
 import com.getinfo.app.uniqoe.utils.ScreenRecorder;
 import com.getinfo.app.uniqoe.widget.MediaController;
+import com.getinfo.sdk.qoemaster.APKVersionCodeUtils;
+import com.getinfo.sdk.qoemaster.DeviceHelper;
+import com.getinfo.sdk.qoemaster.GlobalInfo;
+import com.getinfo.sdk.qoemaster.Interfaces.InterfaceCls;
+import com.getinfo.sdk.qoemaster.LocationInfo;
+import com.getinfo.sdk.qoemaster.PhoneInfo;
+import com.getinfo.sdk.qoemaster.QoEVideoInfo;
+import com.getinfo.sdk.qoemaster.QoEVideoSource;
+import com.getinfo.sdk.qoemaster.Setting;
+import com.getinfo.sdk.qoemaster.UploadDataHelper;
 import com.google.gson.Gson;
 import com.pili.pldroid.player.AVOptions;
 import com.pili.pldroid.player.PLOnAudioFrameListener;
@@ -45,7 +49,6 @@ import com.pili.pldroid.player.widget.PLVideoView;
 import org.json.JSONObject;
 
 import java.math.BigInteger;
-import java.security.PublicKey;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -110,6 +113,7 @@ public class QoEVideoPlayerActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_qo_evideo_player);
         Log.i("QoEVideoPlayerStart", "===================");
         Log.i("QoEVideoPlayerStart", "onCreate");
@@ -122,6 +126,7 @@ public class QoEVideoPlayerActivity extends AppCompatActivity {
         qoEVideoPlayerActivity=this;
         init();
     }
+
 
     private void startRecord() {
         mediaProjectionManager = (MediaProjectionManager) this.getSystemService(MEDIA_PROJECTION_SERVICE);
@@ -145,7 +150,7 @@ public class QoEVideoPlayerActivity extends AppCompatActivity {
 
     private void stopRescord() {
         isScreenRecording = false;
-        ScreenRecorder screenRecorder = GlobalInfo.getScreenRecorder();
+        ScreenRecorder screenRecorder = Module.getScreenRecorder();
         if (screenRecorder != null) {
             screenRecorder.stop();
         }
@@ -178,7 +183,7 @@ public class QoEVideoPlayerActivity extends AppCompatActivity {
             // return;
         }
         if (isCanRecord) {
-            ScreenRecorder screenRecorder = GlobalInfo.getScreenRecorder();
+            ScreenRecorder screenRecorder = Module.getScreenRecorder();
             if (screenRecorder != null) {
                 screenRecorder.stop();
             }
@@ -193,12 +198,12 @@ public class QoEVideoPlayerActivity extends AppCompatActivity {
                 finish();
                 return;
             }
-            GlobalInfo.setScreenRecorder(screenRecorder);
+            Module.setScreenRecorder(screenRecorder);
             UplanScreenRecordFileName = ScreenRecordUploadHelper.GetNewScreenRecordFileName();
             screenRecordThread = new Thread() {
                 @Override
                 public void run() {
-                    ScreenRecorder screenRecorder = GlobalInfo.getScreenRecorder();
+                    ScreenRecorder screenRecorder = Module.getScreenRecorder();
                     screenRecorder.recordFileName = UplanScreenRecordFileName;
                     screenRecorder.startRecorder();
                 }
@@ -213,7 +218,7 @@ public class QoEVideoPlayerActivity extends AppCompatActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            ScreenRecorder screenRecorder = GlobalInfo.getScreenRecorder();
+            ScreenRecorder screenRecorder = Module.getScreenRecorder();
             isScreenRecording = false;
             if (screenRecorder != null) {
                 screenRecorder.abort();
@@ -239,14 +244,14 @@ public class QoEVideoPlayerActivity extends AppCompatActivity {
     private void init() {
         LinearLayout divInfo=findViewById(R.id.divInfo);
         divInfo.bringToFront();
-        Button btnNext = findViewById(R.id.btnNext);
+      //  Button btnNext = findViewById(R.id.btnNext);
         myWatchTimes = findViewById(R.id.myWatchTimes);
-        btnNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                StartPlayVideo();
-            }
-        });
+//        btnNext.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                StartPlayVideo();
+//            }
+//        });
         videoHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
@@ -268,7 +273,7 @@ public class QoEVideoPlayerActivity extends AppCompatActivity {
             }
         };
         IniPlayer();
-        //  setGestureListener();
+         setGestureListener();
         mIsLiveStreaming = false;
 
         StartPlayVideo();
@@ -278,11 +283,16 @@ public class QoEVideoPlayerActivity extends AppCompatActivity {
 
     //设置手势滑动监听器，为后面滑动切换视频做准备
     private void setGestureListener() {
-        mMediaController.setOnTouchListener(new View.OnTouchListener() {
+        LinearLayout videoDiv=findViewById(R.id.videoDiv);
+        videoDiv.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean performClick() {
+//                return super.performClick();
+//            }
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 // TODO Auto-generated method stub
-                Log.i("GestureHasaki", "onTouch");
+               // Log.i("GestureHasaki", "onTouch");
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         mPosX = event.getX();
@@ -300,17 +310,20 @@ public class QoEVideoPlayerActivity extends AppCompatActivity {
                                 && (Math.abs(mCurPosY - mPosY) > 25)) {
                             //向下滑動
                             Log.i("GestureHasaki", "向下");
-
+                            StartPlayVideo();
                         } else if (mCurPosY - mPosY < 0
                                 && (Math.abs(mCurPosY - mPosY) > 25)) {
                             //向上滑动
                             Log.i("GestureHasaki", "向上");
+                            StartPlayVideo();
                         }
 
                         break;
                 }
                 return true;
             }
+
+
 
         });
     }
@@ -386,6 +399,7 @@ public class QoEVideoPlayerActivity extends AppCompatActivity {
     }
 
     private void StartPlayVideo() {
+        mVideoView.pause();
         isRecordScreen = false;
         stopRescord();
         if (GlobalInfo.getSetting(this).switchQoEScreenRecord) {
@@ -425,9 +439,9 @@ public class QoEVideoPlayerActivity extends AppCompatActivity {
         IniPlayer();
         //  QoEVideoSource.QoEVideoSourceInfo qoEVideoSourceInfo = QoEVideoSource.getNewQoEVideoSourceInfo();
 
-        InterfaceCls.IQoEVideoSource iQoEVideoSource = new InterfaceCls.IQoEVideoSource() {
+         InterfaceCls.IQoEVideoSource iQoEVideoSource = new InterfaceCls.IQoEVideoSource() {
             @Override
-            public void OnNewQoEVideoSourceInfo(final QoEVideoSource.QoEVideoSourceInfo qoEVideoSourceInfo) {
+            public void onNewQoEVideoSourceInfo(final QoEVideoSource.QoEVideoSourceInfo qoEVideoSourceInfo) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

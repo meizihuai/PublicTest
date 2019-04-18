@@ -18,14 +18,11 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
-import com.getinfo.app.uniqoe.utils.LocationInfo;
+import com.getinfo.sdk.qoemaster.PhoneInfo;
 import com.google.gson.Gson;
 
 import java.text.DecimalFormat;
-import java.util.Date;
 
 
 public class FrmQoEVideoHTML extends Fragment {

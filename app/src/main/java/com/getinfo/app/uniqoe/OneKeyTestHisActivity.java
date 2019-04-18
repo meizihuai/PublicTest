@@ -9,11 +9,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.getinfo.sdk.qoemaster.GlobalInfo;
+import com.getinfo.sdk.qoemaster.PhoneInfo;
 import com.google.gson.Gson;
 
 import java.io.Console;
@@ -27,6 +30,7 @@ public class OneKeyTestHisActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_mission);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         StatusBarUtil.setColor(this,0x05ACED,0);
@@ -89,7 +93,7 @@ public class OneKeyTestHisActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     String js="onRecivePhoneInfo(\"\")";
-                    PhoneInfo pi=GlobalInfo.getPi();
+                    PhoneInfo pi= GlobalInfo.getPi();
                     if(pi!=null){
                         Gson gson=new Gson();
                         String json=gson.toJson(pi);

@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.icu.lang.UProperty;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -20,11 +19,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CheckBox;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.getinfo.app.uniqoe.utils.DeviceHelper;
+import com.getinfo.sdk.qoemaster.APKVersionCodeUtils;
+import com.getinfo.sdk.qoemaster.DeviceHelper;
+import com.getinfo.sdk.qoemaster.GetPhoneInfoHelper;
+import com.getinfo.sdk.qoemaster.GlobalInfo;
+import com.getinfo.sdk.qoemaster.OneKeyTestInfo;
+import com.getinfo.sdk.qoemaster.PhoneInfo;
+import com.getinfo.sdk.qoemaster.QoEHTTPInfo;
+import com.getinfo.sdk.qoemaster.QoEVideoInfo;
+import com.getinfo.sdk.qoemaster.ScoreHelper;
+import com.getinfo.sdk.qoemaster.ScoreInfo;
+import com.getinfo.sdk.qoemaster.Setting;
+import com.getinfo.sdk.qoemaster.UploadDataHelper;
 import com.google.gson.Gson;
 
 import org.json.JSONObject;
@@ -218,7 +227,7 @@ public class FrmOneKeyTest extends Fragment {
             @Override
             public void run() {
                 try {
-                    String url=GlobalInfo.defaultServerUrl;
+                    String url= GlobalInfo.serverUrl;
                     Setting setting=GlobalInfo.getSetting(getContext());
                     if(setting!=null){
                         url=setting.serverUrl;

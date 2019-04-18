@@ -7,11 +7,15 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.getinfo.sdk.qoemaster.QoEHTTPInfo;
+import com.getinfo.sdk.qoemaster.QoEVideoInfo;
+import com.getinfo.sdk.qoemaster.UploadDataHelper;
 import com.google.gson.Gson;
 
 import java.text.SimpleDateFormat;
@@ -47,6 +51,7 @@ public class QoEVideoScoreActivity extends AppCompatActivity implements View.OnC
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_qo_evideo_score);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         StatusBarUtil.setColor(this, 0x05ACED, 0);

@@ -1,35 +1,39 @@
 package com.getinfo.app.uniqoe;
 
-import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.WindowManager;
 import android.webkit.ConsoleMessage;
 import android.webkit.GeolocationPermissions;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
-import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.getinfo.app.uniqoe.utils.AboutInfo;
-import com.getinfo.app.uniqoe.utils.LocationInfo;
+import com.getinfo.sdk.qoemaster.GlobalInfo;
+import com.getinfo.sdk.qoemaster.LocationInfo;
+import com.getinfo.sdk.qoemaster.Setting;
 import com.google.gson.Gson;
 
 import java.util.Date;
+
+import javax.microedition.khronos.opengles.GL;
 
 public class SettingActivity extends AppCompatActivity {
     public String TAG="SettingActivity";
     private WebView webView;
     private SettingActivity settingActivity;
-    //private String HTMLUrl = "http://10.253.12.105:8848/PublicTestH5Page/Setting.html";
+   // private String HTMLUrl = "http://10.253.12.105:8848/PublicTestH5Page/Setting.html";
     private String HTMLUrl = "http://221.238.40.153:7062/html/PublicTestH5Page/Setting.html";
    // private  String myIp="10.253.12.105";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_setting);
         StatusBarUtil.setColor(this,0x05ACED,0);
         settingActivity=this;
@@ -114,7 +118,7 @@ public class SettingActivity extends AppCompatActivity {
             Log.i(TAG,"getAboutInfo");
             try{
                 AboutInfo aboutInfo=new AboutInfo();
-                aboutInfo.imei=GlobalInfo.myDeviceImei;
+                aboutInfo.imei= GlobalInfo.myDeviceImei;
                 aboutInfo.imsi=GlobalInfo.myDeviceImsi;
                 aboutInfo.version=GlobalInfo.myVersion;
                 Gson gson=new Gson();
@@ -134,6 +138,29 @@ public class SettingActivity extends AppCompatActivity {
                 String json=gson.toJson(locationInfo);
                 String str = "onLocation("+json+")";
                 RunJs(str);
+            }
+        }
+        @JavascriptInterface
+        public  void getSetting(){
+            Setting setting=GlobalInfo.getSetting(settingActivity);
+            Gson gson=new Gson();
+            String json=gson.toJson(setting);
+            String str = "onSetting("+json+")";
+            RunJs(str);
+        }
+        @JavascriptInterface
+        public  void  saveSetting(String json){
+            Gson gson=new Gson();
+            try{
+                Setting setting=gson.fromJson(json,Setting.class);
+                if(setting==null){
+                    RunJs("onSaveSettingResult('保存失败，格式有误')");
+                    return;
+                }
+                GlobalInfo.setSetting(settingActivity,setting);
+                RunJs("onSaveSettingResult('success')");
+            }catch (Exception e){
+                RunJs("onSaveSettingResult('"+e.getMessage()+"')");
             }
         }
     }

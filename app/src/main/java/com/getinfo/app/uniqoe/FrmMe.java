@@ -19,9 +19,15 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.getinfo.app.uniqoe.utils.HTTPHelper;
 import com.getinfo.app.uniqoe.utils.MultipleClick;
-import com.getinfo.app.uniqoe.utils.NormalResponse;
+import com.getinfo.sdk.qoemaster.APKVersionCodeUtils;
+import com.getinfo.sdk.qoemaster.GlobalInfo;
+import com.getinfo.sdk.qoemaster.HTTPHelper;
+import com.getinfo.sdk.qoemaster.NormalResponse;
+import com.getinfo.sdk.qoemaster.PhoneInfo;
+import com.getinfo.sdk.qoemaster.QoEVideoSource;
+import com.getinfo.sdk.qoemaster.Setting;
+import com.getinfo.sdk.qoemaster.UploadDataHelper;
 import com.google.gson.Gson;
 
 import org.json.JSONObject;
@@ -174,7 +180,7 @@ public class FrmMe extends Fragment {
         });
         divPhoneOS = myView.findViewById(R.id.divPhoneOS);
         MultipleClick multipleClick = new MultipleClick();
-        multipleClick.multipleClick(3, 500, divPhoneOS, new MultipleClick.MultipleClickBack() {
+        multipleClick.multipleClick(3, 1000, divPhoneOS, new MultipleClick.MultipleClickBack() {
             @Override
             public void doBack() {
                 String str = "IMEI:" + GlobalInfo.myDeviceImei + " IMSI:" + GlobalInfo.myDeviceImsi;
@@ -197,8 +203,8 @@ public class FrmMe extends Fragment {
 //                }
 //            }
 //        });
-        CheckCanUpdate();
-        CheckDevicePermission();
+
+
         return myView;
     }
 
@@ -313,9 +319,10 @@ public class FrmMe extends Fragment {
     }
 
     //获取本设备的执行权限，目前权限为9的设备可以打开任务管理模块
-    private void CheckDevicePermission() {
+    public void CheckDevicePermission() {
         Setting tmpSetting = GlobalInfo.getSetting(getContext());
-        String urlTmp = GlobalInfo.defaultServerUrl;
+        String urlTmp = GlobalInfo.serverUrl;
+        Log.i("CheckDevicePermission","url="+urlTmp);
         if (tmpSetting != null) {
             urlTmp = GlobalInfo.getSetting(getContext()).serverUrl;
         }
@@ -412,7 +419,7 @@ public class FrmMe extends Fragment {
     }
 
     ///判断是否可以更新
-    private void CheckCanUpdate() {
+    public void CheckCanUpdate() {
         Log.i("hasaki", "begin runing...");
         new Thread(new Runnable() {
             @Override
@@ -503,7 +510,7 @@ public class FrmMe extends Fragment {
     }
 
     public void GetMyBonusPoints() {
-        String url = GlobalInfo.defaultServerUrl + "?func=GetMyBonusPoints&imsi=" + GlobalInfo.myDeviceImsi;
+        String url = GlobalInfo.serverUrl + "?func=GetMyBonusPoints&imsi=" + GlobalInfo.myDeviceImsi;
         HTTPHelper.GetH(url, new HTTPHelper.HTTPResponse() {
             @Override
             public void OnNormolResponse(NormalResponse np) {

@@ -16,7 +16,8 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.getinfo.app.uniqoe.utils.LocationInfo;
+import com.getinfo.sdk.qoemaster.GlobalInfo;
+import com.getinfo.sdk.qoemaster.LocationInfo;
 import com.google.gson.Gson;
 
 import java.util.Date;
@@ -124,7 +125,7 @@ public class FrmAmapHTML extends Fragment {
         @JavascriptInterface
         public void getlocation() {
             // Log.i("FrmAmapHTML","前端请求getlocation");
-            LocationInfo locationInfo=GlobalInfo.getLocationInfo();
+            LocationInfo locationInfo= GlobalInfo.getLocationInfo();
             if(locationInfo!=null){
             Gson gson=new Gson();
                 String json=gson.toJson(locationInfo);

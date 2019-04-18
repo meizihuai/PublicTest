@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.webkit.ConsoleMessage;
 import android.webkit.GeolocationPermissions;
 import android.webkit.JavascriptInterface;
@@ -21,6 +22,8 @@ import android.webkit.WebViewClient;
 import android.widget.Toast;
 
 import com.getinfo.app.uniqoe.utils.AboutInfo;
+import com.getinfo.sdk.qoemaster.DownloadUtils;
+import com.getinfo.sdk.qoemaster.GlobalInfo;
 import com.google.gson.Gson;
 import com.googlecode.mp4parser.boxes.AC3SpecificBox;
 
@@ -35,6 +38,7 @@ public class AboutActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_about);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         StatusBarUtil.setColor(this,0x05ACED,0);
@@ -145,7 +149,7 @@ public class AboutActivity extends AppCompatActivity {
             Log.i(TAG,"getAboutInfo");
             try{
                 AboutInfo aboutInfo=new AboutInfo();
-                aboutInfo.imei=GlobalInfo.myDeviceImei;
+                aboutInfo.imei= GlobalInfo.myDeviceImei;
                 aboutInfo.imsi=GlobalInfo.myDeviceImsi;
                 aboutInfo.version=GlobalInfo.myVersion;
                 Gson gson=new Gson();

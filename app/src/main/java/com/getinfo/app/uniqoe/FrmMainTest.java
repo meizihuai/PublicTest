@@ -13,7 +13,9 @@ import android.widget.TextView;
 
 import com.bin.david.form.core.SmartTable;
 import com.bin.david.form.data.style.FontStyle;
-import com.getinfo.app.uniqoe.utils.EarFcnHelper;
+import com.getinfo.sdk.qoemaster.EarFcnHelper;
+import com.getinfo.sdk.qoemaster.Neighbour;
+import com.getinfo.sdk.qoemaster.PhoneInfo;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -216,7 +218,16 @@ public class FrmMainTest extends Fragment {
             }
 
 
-            List<Neighbour> nb = pi.neighbourList;
+            List<com.getinfo.app.uniqoe.Neighbour> nb = new ArrayList<>();
+            for (com.getinfo.sdk.qoemaster.Neighbour n: pi.neighbourList) {
+                com.getinfo.app.uniqoe.Neighbour nh=new  com.getinfo.app.uniqoe.Neighbour();
+                nh.Type=n.Type;
+                nh.EARFCN=n.EARFCN;
+                nh.PCI=n.PCI;
+                nh.RSRP=n.RSRP;
+                nh.RSRQ=n.RSRQ;
+                nb.add(nh);
+            }
             if (nb != null) {
                 try {
                     neighbourListTable.setData(nb);

@@ -5,18 +5,14 @@ import android.os.Environment;
 import android.util.Base64;
 import android.util.Log;
 
-import com.getinfo.app.uniqoe.FileHelper;
-import com.getinfo.app.uniqoe.QoEVideoSource;
+import com.getinfo.sdk.qoemaster.DeviceHelper;
+import com.getinfo.sdk.qoemaster.FileHelper;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import javax.xml.transform.sax.TemplatesHandler;
 
 import okhttp3.Call;
 import okhttp3.MediaType;
@@ -54,7 +50,7 @@ public class ScreenRecordUploadHelper {
                     if(isDoWork){
                         try{
 
-                            boolean isWifiConnected=DeviceHelper.isWifiConnect(activity);
+                            boolean isWifiConnected= DeviceHelper.isWifiConnect(activity);
                             if(isWifiConnected){
                                 Log.i(TAG,"wifi状态，checkfile");
                                 CheckLocalFiles(activity);

@@ -25,6 +25,10 @@ import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.getinfo.sdk.qoemaster.GlobalInfo;
+import com.getinfo.sdk.qoemaster.PhoneInfo;
+import com.getinfo.sdk.qoemaster.QoEHTTPInfo;
+import com.getinfo.sdk.qoemaster.Setting;
 import com.google.gson.Gson;
 
 
@@ -96,7 +100,7 @@ public class FrmHTTP extends Fragment {
     }
     private  void loadUrl(String url){
         isOpenedScoreActitity=false;
-        PhoneInfo pi=GlobalInfo.getPi();
+        PhoneInfo pi= GlobalInfo.getPi();
         if(pi==null){
             MsgBox("请等待系统加载完毕");
             return;

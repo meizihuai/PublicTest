@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.getinfo.app.uniqoe.utils.ScreenRecorder;
+import com.getinfo.sdk.qoemaster.PhoneInfo;
 import com.google.gson.Gson;
 
 import java.text.DecimalFormat;
