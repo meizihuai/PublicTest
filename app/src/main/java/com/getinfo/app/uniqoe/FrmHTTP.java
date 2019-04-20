@@ -23,6 +23,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.getinfo.sdk.qoemaster.GlobalInfo;
@@ -34,6 +35,7 @@ import com.google.gson.Gson;
 
 public class FrmHTTP extends Fragment {
     private View myView;
+    private ProgressBar progressBar;
   private   ImageView iv_baidu,iv_taobao,iv_souhu,iv_toutiao,iv_tencent;
     private String defaultUrl = "https://m.baidu.com/?from=1012852s";
     private String HTMLUrl = defaultUrl;
@@ -209,6 +211,7 @@ public class FrmHTTP extends Fragment {
     private void iniWebView() {
         mProgressDialog = new ProgressDialog(getActivity());
         webView = myView.findViewById(R.id.webView);
+        progressBar=myView.findViewById(R.id.progressBar);
         webView.setWebViewClient(this.webViewClient);
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
@@ -225,6 +228,17 @@ public class FrmHTTP extends Fragment {
             public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
                 Log.i(webviewlogTag, "[" + consoleMessage.messageLevel() + "] " + consoleMessage.message() + "(" + consoleMessage.sourceId() + ":" + consoleMessage.lineNumber() + ")");
                 return super.onConsoleMessage(consoleMessage);
+            }
+
+            @Override
+            public void onProgressChanged(WebView view, int newProgress) {
+                if (newProgress == 100) {
+                    progressBar.setVisibility(View.GONE);//加载完网页进度条消失
+                } else {
+                    progressBar.setVisibility(View.VISIBLE);//开始加载网页时显示进度条
+                    progressBar.setProgress(newProgress);//设置进度值
+                }
+                super.onProgressChanged(view, newProgress);
             }
 
         });

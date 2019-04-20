@@ -34,7 +34,8 @@ public class AboutActivity extends AppCompatActivity {
     public String TAG="AboutActivity";
     private WebView webView;
    // private String HTMLUrl = "http://10.253.12.105:8848/PublicTestH5Page/About.html";
-    private String HTMLUrl = "http://221.238.40.153:7062/html/PublicTestH5Page/About.html";
+     private String HTMLUrl = "http://221.238.40.153:7062/html/PublicTestH5Page/About.html";
+    //private String HTMLUrl = "http://221.238.40.153:7062/html/PublicTestH5Page/APPDataTrans.html";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,32 +44,6 @@ public class AboutActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         StatusBarUtil.setColor(this,0x05ACED,0);
         iniWebView();
-//        webView = findViewById(R.id.webView);
-//        WebSettings webSettings = webView.getSettings();
-//        // 设置与Js交互的权限
-//        webSettings.setJavaScriptEnabled(true);
-//        // 设置允许JS弹窗
-//        webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
-//        // 防止webView刷新页面的时候跳转到系统浏览器
-//        webView.setWebViewClient(new WebViewClient(){
-//            @Override
-//            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-//                view.loadUrl(url);
-//                return super.shouldOverrideUrlLoading(view, url);
-//            }
-//        });
-//        final Activity activity=this;
-//        JsInterface jsInterface=new JsInterface() {
-//            @Override
-//            public void onBack() {
-//                Log.i(TAG,"onBack");
-//                activity.finish();
-//            }
-//        };
-//
-//        webView.addJavascriptInterface(new JsInteraction(jsInterface), "android");
-//        HTMLUrl=HTMLUrl +"?"+new Date();
-//        webView.loadUrl(HTMLUrl);
     }
     private void iniWebView() {
         webView = findViewById(R.id.webView);
@@ -164,6 +139,11 @@ public class AboutActivity extends AppCompatActivity {
         public  void  getUpdate(String url,String appName,String dirName){
             Log.i(TAG,"getUpdate,url="+url+",appName="+appName+",dirName="+dirName);
             jsInterface.onGetUpdate(url,appName,dirName,activity);
+        }
+
+        @JavascriptInterface
+        public  void callAPPMethod(String msg){
+            RunJs("onReceiveMsg('"+msg+"')");
         }
 
 

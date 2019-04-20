@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.WindowManager;
 import android.webkit.ConsoleMessage;
 import android.webkit.GeolocationPermissions;
@@ -12,6 +13,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
 
 import com.getinfo.app.uniqoe.utils.AboutInfo;
 import com.getinfo.sdk.qoemaster.GlobalInfo;
@@ -26,6 +28,7 @@ import javax.microedition.khronos.opengles.GL;
 public class SettingActivity extends AppCompatActivity {
     public String TAG="SettingActivity";
     private WebView webView;
+    private ProgressBar progressBar;
     private SettingActivity settingActivity;
    // private String HTMLUrl = "http://10.253.12.105:8848/PublicTestH5Page/Setting.html";
     private String HTMLUrl = "http://221.238.40.153:7062/html/PublicTestH5Page/Setting.html";
@@ -54,6 +57,7 @@ public class SettingActivity extends AppCompatActivity {
     }
     private void iniWebView() {
         webView = findViewById(R.id.webView);
+        progressBar=findViewById(R.id.progressBar);
         webView.setWebViewClient(new WebViewClient(){
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -91,6 +95,16 @@ public class SettingActivity extends AppCompatActivity {
                 return super.onConsoleMessage(consoleMessage);
             }
 
+            @Override
+            public void onProgressChanged(WebView view, int newProgress) {
+                if (newProgress == 100) {
+                    progressBar.setVisibility(View.GONE);//加载完网页进度条消失
+                } else {
+                    progressBar.setVisibility(View.VISIBLE);//开始加载网页时显示进度条
+                    progressBar.setProgress(newProgress);//设置进度值
+                }
+                super.onProgressChanged(view, newProgress);
+            }
         });
         HTMLUrl = HTMLUrl + "?" + new Date();
         webView.addJavascriptInterface(new JsInteraction(), "android");
