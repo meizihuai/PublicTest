@@ -9,7 +9,12 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.location.Location;
 import android.media.MediaPlayer;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.PowerManager;
+import android.speech.tts.UtteranceProgressListener;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.Manifest;
@@ -22,6 +27,9 @@ import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.telephony.SubscriptionManager;
+import android.telephony.TelephonyManager;
+import android.telephony.gsm.GsmCellLocation;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -32,6 +40,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.getinfo.app.uniqoe.utils.PermissionCheckActivity;
 import com.getinfo.app.uniqoe.utils.ScreenRecordUploadHelper;
 import com.getinfo.app.uniqoe.utils.Utils;
 import com.getinfo.sdk.qoemaster.APKVersionCodeUtils;
@@ -69,7 +78,7 @@ import java.util.Locale;
 import java.util.Map;
 
 //主要 Activity，包含TabPages,QOER数据的上传在此
-public class MainActivity extends AppCompatActivity implements FrmMainTest.OnFragmentInteractionListener
+public class MainActivity extends PermissionCheckActivity implements FrmMainTest.OnFragmentInteractionListener
         , FrmQoEVideoTest.OnFragmentInteractionListener
         , FrmMe.OnFragmentInteractionListener
         , FrmOneKeyTest.OnFragmentInteractionListener
@@ -78,7 +87,8 @@ public class MainActivity extends AppCompatActivity implements FrmMainTest.OnFra
         , FrmQoEVideoHTML.OnFragmentInteractionListener
         , FrmHTTP.OnFragmentInteractionListener {
     private QoEWorker qoeWorker;
-    private boolean iswakeLock=true;
+    private Activity mActivity;
+    private boolean iswakeLock = true;
     private boolean askPermissoned = false;
     private String version = "";
     private int testCount = 0;
@@ -100,6 +110,7 @@ public class MainActivity extends AppCompatActivity implements FrmMainTest.OnFra
     private final int REQUEST_CODE_PERMISSION = 0; //权限获取结果
     private List<String> needPermission;  //需要申请权限列表
     //本app需要的并且可能需要弹窗来获取权限的列表
+    //android.permission.REQUEST_INSTALL_PACKAGES  //安装app的权限
     private String[] permissionArray = new String[]{
             Manifest.permission.ACCESS_COARSE_LOCATION, //定位权限
             Manifest.permission.ACCESS_NETWORK_STATE,  //网络定位权限
@@ -108,7 +119,6 @@ public class MainActivity extends AppCompatActivity implements FrmMainTest.OnFra
             Manifest.permission.ACCESS_FINE_LOCATION,  //最后一次位置
             Manifest.permission.WRITE_EXTERNAL_STORAGE,  //写文件 权限
             Manifest.permission.READ_EXTERNAL_STORAGE,  //读文件 权限
-            Manifest.permission.REQUEST_INSTALL_PACKAGES, //安装app的权限 用于自升级
             Manifest.permission.ACCESS_LOCATION_EXTRA_COMMANDS, //允许应用程序访问额外的位置提供命令
             Manifest.permission.CHANGE_WIFI_STATE,  //改变wifi状态
             Manifest.permission.RECORD_AUDIO
@@ -160,6 +170,7 @@ public class MainActivity extends AppCompatActivity implements FrmMainTest.OnFra
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mActivity=this;
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         //等同于 android:keepScreenOn="true"  让屏幕保持常亮
         setContentView(R.layout.activity_main);
@@ -182,37 +193,47 @@ public class MainActivity extends AppCompatActivity implements FrmMainTest.OnFra
         }
         iniUIs(); //初始化UI
         Log.i("sHA1", sHA1(this)); //打印本app的SHA码
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                while(true){
-//                    String uuid= DeviceHelper.GetNewUUID();
-//                    Log.i("uuid",uuid);
-//                    try{
-//                        Thread.sleep(1000);
-//                    }catch (Exception e){
-//
-//                    }
-//                }
-//            }
-//        }).start();
-        // acquireWakeLock();
-        askMultiplePermission();  //开始申请权限
-        // TestThread();
+        // 版本判断。当手机系统大于 23(android6.0) 时，才有必要去判断权限是否获取
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            iniPermission();
+        }else{
+            startWorkAfterPermissionCheck();
+        }
     }
+    private void iniPermission() {
+        super.askMultiplePermission(permissionArray, new IPermissionResult() {
+            @Override
+            public void onSuccess() {
+                Log.i("iniPermission","success");
+                startWorkAfterPermissionCheck();
+            }
+
+            @Override
+            public void onFail(List<String> failPermissions) {
+                String str="";
+                for(String itm:failPermissions){
+                    str=str+itm+";";
+                }
+                Log.i("iniPermission","Fail: "+str);
+                Utils.MsgBox(mActivity,"部分权限未同意，可能影响本APP正常运行",1);
+            }
+        });
+    }
+
     @Override
-    protected void onResume(){
-        Log.i("Mainactivity","onResume");
-       // acquireWakeLock();
+    protected void onResume() {
+        Log.i("Mainactivity", "onResume");
+        // acquireWakeLock();
         super.onResume();
     }
+
     @Override
-    protected  void  onPause(){
-        Log.i("Mainactivity","onPause");
+    protected void onPause() {
+        Log.i("Mainactivity", "onPause");
 //        if (wakeLock != null) {
 //            wakeLock.release();
 //        }
-      //  android.os.Process.killProcess(android.os.Process.myPid());
+        //  android.os.Process.killProcess(android.os.Process.myPid());
         super.onPause();
     }
 
@@ -297,11 +318,10 @@ public class MainActivity extends AppCompatActivity implements FrmMainTest.OnFra
     }
 
 
-
     @SuppressLint("InvalidWakeLockTag")
     private void acquireWakeLock() {
         PowerManager pm = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
-        wakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK , "PostLocationService");
+        wakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "PostLocationService");
         if (iswakeLock) {
             wakeLock.acquire();
         }
@@ -342,9 +362,17 @@ public class MainActivity extends AppCompatActivity implements FrmMainTest.OnFra
         //  mMediaPlayer.start();
     }
 
+
+
+
     //权限申请成功之后开始工作
     private void startWorkAfterPermissionCheck() {
         final Context context = this;
+
+        //数据流量开关
+        boolean dataswitch=DeviceHelper.isMobileEnableReflex(this);
+       // Log.i("dataswitch","dataswitch="+dataswitch);
+
         qoeWorker = new QoEWorker();
         qoeWorker.init(this, new InterfaceCls.IQoEWorkerInfo() {
             @Override
@@ -475,68 +503,6 @@ public class MainActivity extends AppCompatActivity implements FrmMainTest.OnFra
 
 
     //<editor-fold desc="权限操作 Ctrl+ALt+T">
-    public void askMultiplePermission() {
-        needPermission = new ArrayList<>();
-        for (String permissionName :
-                permissionArray) {
-            if (!checkIsAskPermission(this, permissionName)) {
-                needPermission.add(permissionName);
-            }
-        }
 
-        if (needPermission.size() > 0) {
-            //
-
-            ActivityCompat.requestPermissions(this, needPermission.toArray(new String[needPermission.size()]), REQUEST_CODE_PERMISSION);
-        } else {
-            //获取数据
-            startWorkAfterPermissionCheck();
-        }
-
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case REQUEST_CODE_PERMISSION:
-                Map<String, Integer> permissionMap = new HashMap<>();
-                for (String name :
-                        needPermission) {
-                    permissionMap.put(name, PackageManager.PERMISSION_GRANTED);
-                }
-                for (int i = 0; i < permissions.length; i++) {
-                    permissionMap.put(permissions[i], grantResults[i]);
-                }
-                if (checkIsAskPermissionState(permissionMap, permissions)) {
-                    //获取数据
-                    startWorkAfterPermissionCheck();
-                } else {
-                    startWorkAfterPermissionCheck();
-                    //提示权限获取不完成，可能有的功能不能使用
-                    //Toast.makeText(this, "部分权限未同意，程序功能将会受到影响", Toast.LENGTH_LONG).show();
-                }
-                break;
-        }
-    }
-
-    public boolean checkIsAskPermission(Context context, String permission) {
-        if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
-            return false;
-        } else {
-            return true;
-        }
-
-    }
-
-    public boolean checkIsAskPermissionState(Map<String, Integer> maps, String[] list) {
-        for (int i = 0; i < list.length; i++) {
-            if (maps.get(list[i]) != PackageManager.PERMISSION_GRANTED) {
-                return false;
-            }
-        }
-        return true;
-
-    }
     //</editor-fold>
 }

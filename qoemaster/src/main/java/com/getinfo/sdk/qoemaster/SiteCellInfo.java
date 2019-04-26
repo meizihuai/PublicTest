@@ -46,7 +46,7 @@ public class SiteCellInfo {
 
     public SiteCellInfo(List<CellInfo> allCellinfo, String getType,int realCi) {
         if (allCellinfo == null) return;
-        boolean isHaveRealCi= realCi>0;
+        boolean isHaveRealCi= realCi>0 && realCi!=2147483647;
         Gson gsonTmp = new Gson();
         String tmp = gsonTmp.toJson(allCellinfo);
         SetAdjs(allCellinfo, getType);
@@ -73,7 +73,9 @@ public class SiteCellInfo {
                             return;
                         }
                     }else{
-                        return;
+                        if(this.ECI!=2147483647){
+                            return;
+                        }
                     }
                 } catch (Exception e) {
 
@@ -100,7 +102,9 @@ public class SiteCellInfo {
                             return;
                         }
                     }else{
-                        return;
+                        if(this.ECI!=2147483647){
+                            return;
+                        }
                     }
                 } catch (Exception e) {
 
@@ -142,7 +146,9 @@ public class SiteCellInfo {
                             return;
                         }
                     }else{
-                        return;
+                        if(this.ECI!=2147483647){
+                            return;
+                        }
                     }
                 } catch (Exception e) {
                     Log.i("SiteCellInfo",e.getMessage());
@@ -170,7 +176,9 @@ public class SiteCellInfo {
                             return;
                         }
                     }else{
-                        return;
+                        if(this.ECI!=2147483647){
+                            return;
+                        }
                     }
                 } catch (Exception e) {
 

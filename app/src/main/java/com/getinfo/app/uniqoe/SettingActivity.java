@@ -31,7 +31,8 @@ public class SettingActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private SettingActivity settingActivity;
    // private String HTMLUrl = "http://10.253.12.105:8848/PublicTestH5Page/Setting.html";
-    private String HTMLUrl = "http://221.238.40.153:7062/html/PublicTestH5Page/Setting.html";
+     private String HTMLUrl = "http://221.238.40.153:7062/html/PublicTestH5Page/Setting.html";
+   // private String HTMLUrl = "http://192.168.16.55:8848/PublicTestH5Page/Setting.html";
    // private  String myIp="10.253.12.105";
     @Override
     protected void onCreate(Bundle savedInstanceState) {

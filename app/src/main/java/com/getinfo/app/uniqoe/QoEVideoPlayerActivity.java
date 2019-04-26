@@ -307,12 +307,12 @@ public class QoEVideoPlayerActivity extends AppCompatActivity {
                         break;
                     case MotionEvent.ACTION_UP:
                         if (mCurPosY - mPosY > 0
-                                && (Math.abs(mCurPosY - mPosY) > 25)) {
+                                && (Math.abs(mCurPosY - mPosY) > 300)) {
                             //向下滑動
                             Log.i("GestureHasaki", "向下");
                             StartPlayVideo();
                         } else if (mCurPosY - mPosY < 0
-                                && (Math.abs(mCurPosY - mPosY) > 25)) {
+                                && (Math.abs(mCurPosY - mPosY) > 300)) {
                             //向上滑动
                             Log.i("GestureHasaki", "向上");
                             StartPlayVideo();
