@@ -402,6 +402,7 @@ public class MainActivity extends PermissionCheckActivity implements FrmMainTest
 
             @Override
             public void onNewLocationInfo(LocationInfo la) {
+                Log.i("GSPHelper",new Gson().toJson(la));
                 if (frmMainTest != null)
                     frmMainTest.setLocations(la.Lon, la.Lat, la.Accuracy, la.Altitude, la.Speed, la.SatelliteCount);
                 if (frmOneKeyTest != null)
@@ -430,7 +431,9 @@ public class MainActivity extends PermissionCheckActivity implements FrmMainTest
         if (frmMe != null) {
             final View view = frmMe.getMyView();
             if (view != null) {
+                Log.i("startActivity","CheckDevicePermission");
                 frmMe.CheckDevicePermission();
+                Log.i("startActivity","CheckCanUpdate");
                 frmMe.CheckCanUpdate();
                 Switch switchQoEScore = frmMe.getMyView().findViewById(R.id.switchQoESocre);
                 Switch switchQoEScreenRecord = frmMe.getMyView().findViewById(R.id.switchQoEScreenRecord);
@@ -449,6 +452,7 @@ public class MainActivity extends PermissionCheckActivity implements FrmMainTest
                         }
                     }
                 }
+                Log.i("startActivity","GetQoEVideoSourceTypeList");
                 HTTPHelper.GetH((GlobalInfo.serverUrl + "?func=GetQoEVideoSourceTypeList"), new HTTPHelper.HTTPResponse() {
                     @Override
                     public void OnNormolResponse(NormalResponse np) {
@@ -473,7 +477,7 @@ public class MainActivity extends PermissionCheckActivity implements FrmMainTest
                                 });
 
                             } catch (Exception e) {
-
+                                Log.i("startActivity","GetQoEVideoSourceTypeList failed "+e.getMessage());
                             }
                         }
                     }
@@ -481,8 +485,9 @@ public class MainActivity extends PermissionCheckActivity implements FrmMainTest
             }
 
 
+        }else{
+            Log.i("startActivity","frmMe is null");
         }
-
         try {
             LogHelper.log(this, "开启录屏文件上传监测线程...");
             ScreenRecordUploadHelper.StartWork(this);

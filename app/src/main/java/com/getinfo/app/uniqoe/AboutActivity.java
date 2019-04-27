@@ -53,6 +53,16 @@ public class AboutActivity extends AppCompatActivity {
                 view.loadUrl(url);
                 return true;
             }
+            @Override
+            public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
+                url = url.toLowerCase();
+                if(url.contains("http://221.238.40.153")){
+                    return super.shouldInterceptRequest(view, url);
+                }else{
+                    Log.i(TAG,"拦截到一条广告,url="+url);
+                    return new WebResourceResponse(null,null,null);
+                }
+            }
         });
 
 

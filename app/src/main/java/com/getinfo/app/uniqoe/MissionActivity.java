@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.WindowManager;
 import android.webkit.JavascriptInterface;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -40,6 +41,16 @@ public class MissionActivity extends AppCompatActivity {
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 view.loadUrl(url);
                 return true;
+            }
+            @Override
+            public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
+                url = url.toLowerCase();
+                if(url.contains("http://221.238.40.153")){
+                    return super.shouldInterceptRequest(view, url);
+                }else{
+                    Log.i("MissionActivity","拦截到一条广告,url="+url);
+                    return new WebResourceResponse(null,null,null);
+                }
             }
         });
         webView.addJavascriptInterface(new JsInteraction(), "android");

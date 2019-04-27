@@ -15,6 +15,7 @@ import android.webkit.ConsoleMessage;
 import android.webkit.GeolocationPermissions;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -53,6 +54,17 @@ public class FrmQoEVideoHTML extends Fragment {
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 view.loadUrl(url);
                 return true;
+            }
+            @Override
+            public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
+                url = url.toLowerCase();
+                if(url.contains("http://221.238.40.153")){
+                    return super.shouldInterceptRequest(view, url);
+                }else{
+                    //去掉广告
+                    Log.i(webviewlogTag,"拦截到一条广告,url="+url);
+                    return new WebResourceResponse(null,null,null);
+                }
             }
         });
 
