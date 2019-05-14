@@ -120,7 +120,7 @@ public class GlobalInfo {
         try{
             Setting setting=new Setting();
             setting.switchQoEScore=true;
-            setting.switchQoEScreenRecord=true;
+            setting.switchQoEScreenRecord=false;
             setting.videoWantType="全部";
             setting.serverUrl=defaultServerUrl;
             Gson gson=new Gson();

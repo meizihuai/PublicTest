@@ -1,5 +1,6 @@
 package com.getinfo.app.uniqoe;
 
+import android.content.pm.ActivityInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,10 +27,9 @@ import java.util.Date;
 
 import javax.microedition.khronos.opengles.GL;
 
-public class SettingActivity extends AppCompatActivity {
+public class SettingActivity extends WebViewActivity {
     public String TAG="SettingActivity";
-    private WebView webView;
-    private ProgressBar progressBar;
+    public ProgressBar progressBar;
     private SettingActivity settingActivity;
    // private String HTMLUrl = "http://10.253.12.105:8848/PublicTestH5Page/Setting.html";
      private String HTMLUrl = "http://221.238.40.153:7062/html/PublicTestH5Page/Setting.html";
@@ -39,87 +39,17 @@ public class SettingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        setContentView(R.layout.activity_setting);
+        setContentView(R.layout.activity_about);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         StatusBarUtil.setColor(this,0x05ACED,0);
         settingActivity=this;
-        iniWebView();
-    }
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        //改写物理返回键的逻辑
-        if(keyCode==KeyEvent.KEYCODE_BACK) {
-            if(webView.canGoBack()) {
-                webView.goBack();//返回上一页面
-                return true;
-            } else {
-               finish();
-            }
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-    private void iniWebView() {
-        webView = findViewById(R.id.webView);
         progressBar=findViewById(R.id.progressBar);
-        webView.setWebViewClient(new WebViewClient(){
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                view.loadUrl(url);
-                return true;
-            }
-            @Override
-            public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
-                url = url.toLowerCase();
-                if(url.contains("http://221.238.40.153")){
-                    return super.shouldInterceptRequest(view, url);
-                }else{
-                    Log.i(TAG,"拦截到一条广告,url="+url);
-                    return new WebResourceResponse(null,null,null);
-                }
-            }
-        });
-
-
-        WebSettings webSettings = webView.getSettings();
-        webSettings.setJavaScriptEnabled(true);
-        webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
-
-        webSettings.setDomStorageEnabled(true);
-        webView.setWebChromeClient(new WebChromeClient() {
-            @Override
-            public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
-                callback.invoke(origin, true, false);
-                super.onGeolocationPermissionsShowPrompt(origin, callback);
-            }
-
-            @Override
-            public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-                Log.i(TAG+"Console", "[" + consoleMessage.messageLevel() + "] " + consoleMessage.message() + "(" + consoleMessage.sourceId() + ":" + consoleMessage.lineNumber() + ")");
-                return super.onConsoleMessage(consoleMessage);
-            }
-
-            @Override
-            public void onProgressChanged(WebView view, int newProgress) {
-                if (newProgress == 100) {
-                    progressBar.setVisibility(View.GONE);//加载完网页进度条消失
-                } else {
-                    progressBar.setVisibility(View.VISIBLE);//开始加载网页时显示进度条
-                    progressBar.setProgress(newProgress);//设置进度值
-                }
-                super.onProgressChanged(view, newProgress);
-            }
-        });
-        HTMLUrl = HTMLUrl + "?" + new Date();
-        webView.addJavascriptInterface(new JsInteraction(), "android");
-        webView.loadUrl(HTMLUrl);
+        HTMLUrl=HTMLUrl+"?t="+System.currentTimeMillis();
+        JsInteraction jsInteraction=new JsInteraction();
+        iniWebView(this,jsInteraction, HTMLUrl,TAG+"Console","android",progressBar);
     }
-    public   void RunJs(final String js){
-        webView.post(new Runnable() {
-            @Override
-            public void run() {
-                webView.loadUrl("javascript:"+js);
-            }
-        });
-    }
+
+
     public class JsInteraction {
         public JsInteraction() {
 
@@ -147,7 +77,7 @@ public class SettingActivity extends AppCompatActivity {
         }
         @JavascriptInterface
         public void getlocation() {
-            // Log.i("FrmAmapHTML","前端请求getlocation");
+
             LocationInfo locationInfo=GlobalInfo.getLocationInfo();
             if(locationInfo!=null){
                 Gson gson=new Gson();

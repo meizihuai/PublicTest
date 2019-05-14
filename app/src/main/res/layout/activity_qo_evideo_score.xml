@@ -54,7 +54,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="总 评 分"
+                    android:text="您的评价推动网络进步"
                     android:textColor="@color/text_gray"
                     android:gravity="center"
                     android:textSize="18sp" />
@@ -216,6 +216,7 @@
 
             <!--启动速度-->
             <RelativeLayout
+                android:id="@+id/rdivLoading"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -327,6 +328,7 @@
             </RelativeLayout>
             <!--流畅速度-->
             <RelativeLayout
+                android:id="@+id/rdivliuchang"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -438,6 +440,7 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/rdivqingxidu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 

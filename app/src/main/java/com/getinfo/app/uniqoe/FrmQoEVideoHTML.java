@@ -11,14 +11,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.ConsoleMessage;
-import android.webkit.GeolocationPermissions;
+
 import android.webkit.JavascriptInterface;
-import android.webkit.WebChromeClient;
-import android.webkit.WebResourceResponse;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
+
+import android.widget.ProgressBar;
 
 import com.getinfo.sdk.qoemaster.PhoneInfo;
 import com.google.gson.Gson;
@@ -32,10 +28,11 @@ public class FrmQoEVideoHTML extends Fragment {
 
     private OnFragmentInteractionListener mListener;
     private View myView;
-    private WebView webView;
+    private WebViewCls webViewCls;
     private String webviewlogTag="WebViewFrmQoEVideoHTML";
+    private ProgressBar progressBar;
     private String HTMLUrl = "http://221.238.40.153:7062/html/PublicTestH5Page/QoEVideoStart.html";
-   // private String HTMLUrl = "http://10.253.12.105:8848/PublicTestH5Page/QoEVideoStart.html";
+    // private String HTMLUrl = "http://10.253.12.105:8848/PublicTestH5Page/QoEVideoStart.html";
 
     private PhoneInfo pi;
     private boolean flagGetFristPI = false;
@@ -43,79 +40,29 @@ public class FrmQoEVideoHTML extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        myView = inflater.inflate(R.layout.fragment_frm_qo_evideo_html, container, false);
+        myView = inflater.inflate(R.layout.fragment_frm_qoe_video_html, container, false);
         iniWebView();
         return myView;
     }
     private void iniWebView() {
-        webView = myView.findViewById(R.id.webView);
-        webView.setWebViewClient(new WebViewClient(){
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                view.loadUrl(url);
-                return true;
-            }
-            @Override
-            public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
-                url = url.toLowerCase();
-                if(url.contains("http://221.238.40.153")){
-                    return super.shouldInterceptRequest(view, url);
-                }else{
-                    //去掉广告
-                    Log.i(webviewlogTag,"拦截到一条广告,url="+url);
-                    return new WebResourceResponse(null,null,null);
-                }
-            }
-        });
-
-
-        WebSettings webSettings = webView.getSettings();
-        webSettings.setJavaScriptEnabled(true);
-        webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
-
-        webSettings.setDomStorageEnabled(true);
-        webView.setWebChromeClient(new WebChromeClient() {
-            @Override
-            public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
-                callback.invoke(origin, true, false);
-                super.onGeolocationPermissionsShowPrompt(origin, callback);
-            }
-
-            @Override
-            public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-                Log.i(webviewlogTag, "[" + consoleMessage.messageLevel() + "] " + consoleMessage.message() + "(" + consoleMessage.sourceId() + ":" + consoleMessage.lineNumber() + ")");
-                return super.onConsoleMessage(consoleMessage);
-            }
-
-
-        });
-        HTMLUrl = HTMLUrl + "?" + System.currentTimeMillis();
-        webView.addJavascriptInterface(new JsInteraction(), "android");
-        webView.loadUrl(HTMLUrl);
+        progressBar=myView.findViewById(R.id.progressBar);
+        com.tencent.smtt.sdk.WebView webView=myView.findViewById(R.id.webView);
+        HTMLUrl=HTMLUrl+"?"+System.currentTimeMillis();
+        webViewCls=new WebViewCls();
+        webViewCls.iniWebView(webView,new JsInteraction(),HTMLUrl,webviewlogTag,"android",progressBar);
     }
-    public interface IJsFunction{
-        void onStartQoEVideoTest();
-        void isReadyToPlayVideo();
-    }
+
     public void RunJs(final String js) {
-        webView.post(new Runnable() {
-            @Override
-            public void run() {
-                webView.loadUrl("javascript:" + js);
-            }
-        });
+       webViewCls.RunJs(js);
     }
     public class JsInteraction {
-        public JsInteraction() {
-
-        }
         @JavascriptInterface
         public void isReadyToPlayVideo(String msg) {
-               RunJs("onIsReadyToPlayVideo("+flagGetFristPI+")");
+            RunJs("onIsReadyToPlayVideo("+flagGetFristPI+")");
         }
         @JavascriptInterface
         public void startQoEVideoTest(String msg) {
-              StartQoEVideoTest();
+            StartQoEVideoTest();
         }
     }
     //开始视频测试按钮

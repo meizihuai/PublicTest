@@ -53,6 +53,8 @@ public class FrmMe extends Fragment {
     private long divPhoneOSClickms = System.currentTimeMillis();
     private View myView;
     private String apkUrl;
+    private boolean isNeedInit=false;
+    private boolean isInited=false;
 
 
     private String token = "928453310";
@@ -106,14 +108,14 @@ public class FrmMe extends Fragment {
         });
         switchQoEScore = myView.findViewById(R.id.switchQoESocre);
         switchQoEScreenRecord = myView.findViewById(R.id.switchQoEScreenRecord);
-        Setting tmpSetting = GlobalInfo.getSetting(getContext());
-        if (tmpSetting != null) {
-            Log.i("setSetting", "tmpSetting.switchQoEScore=" + tmpSetting.switchQoEScore);
-            switchQoEScore.setChecked(tmpSetting.switchQoEScore);
-            switchQoEScreenRecord.setChecked(tmpSetting.switchQoEScreenRecord);
-        } else {
-            Log.i("setSetting", "tmpSetting is null");
-        }
+//        Setting tmpSetting = GlobalInfo.getSetting(getContext());
+//        if (tmpSetting != null) {
+//            Log.i("setSetting", "tmpSetting.switchQoEScore=" + tmpSetting.switchQoEScore);
+//            switchQoEScore.setChecked(tmpSetting.switchQoEScore);
+//            switchQoEScreenRecord.setChecked(tmpSetting.switchQoEScreenRecord);
+//        } else {
+//            Log.i("setSetting", "tmpSetting is null");
+//        }
 
         switchQoEScore.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -203,9 +205,67 @@ public class FrmMe extends Fragment {
 //                }
 //            }
 //        });
-
-
+        if(isNeedInit && !isInited){
+            init();
+        }
         return myView;
+    }
+    public  void init(){
+        Log.i("FrmMeInit","init");
+        if(isInited)return;
+        isNeedInit=true;
+        if(myView==null){
+            isInited=false;
+            return;
+        }
+        isInited=true;
+        CheckDevicePermission();
+        CheckCanUpdate();
+        Switch switchQoEScore =myView.findViewById(R.id.switchQoESocre);
+        Switch switchQoEScreenRecord = myView.findViewById(R.id.switchQoEScreenRecord);
+        Spinner spinner_serverIp = myView.findViewById(R.id.spinner_serverUrl);
+        final Spinner spinner_videoType = myView.findViewById(R.id.spinner_videoType);
+        final Setting tmpSetting = GlobalInfo.getSetting(getContext());
+        if (tmpSetting != null) {
+            switchQoEScore.setChecked(tmpSetting.switchQoEScore);
+            switchQoEScreenRecord.setChecked(tmpSetting.switchQoEScreenRecord);
+            String serverUrl = tmpSetting.serverUrl;
+            QoEVideoSource.wantType = tmpSetting.videoWantType;
+            for (int i = 0; i < spinner_serverIp.getAdapter().getCount(); i++) {
+                if (serverUrl.equals(spinner_serverIp.getAdapter().getItem(i).toString())) {
+                    spinner_serverIp.setSelection(i);
+                    break;
+                }
+            }
+        }
+        HTTPHelper.GetH((GlobalInfo.serverUrl + "?func=GetQoEVideoSourceTypeList"), new HTTPHelper.HTTPResponse() {
+            @Override
+            public void OnNormolResponse(NormalResponse np) {
+                if (np.result && np.data != null) {
+                    try {
+                        List<String> list = new ArrayList<>();
+                        list = new Gson().fromJson(np.data.toString(), list.getClass());
+                        final List<String> tmp = list;
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                iniSpinnerVideoType(tmp);
+                                if (tmpSetting != null) {
+                                    for (int i = 0; i < spinner_videoType.getAdapter().getCount(); i++) {
+                                        if (tmpSetting.videoWantType.equals(spinner_videoType.getAdapter().getItem(i).toString())) {
+                                            spinner_videoType.setSelection(i);
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    } catch (Exception e) {
+                        Log.i("startActivity","GetQoEVideoSourceTypeList failed "+e.getMessage());
+                    }
+                }
+            }
+        });
     }
 
     private void iniSpinner() {

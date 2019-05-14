@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +29,7 @@ public class QoEVideoScoreActivity extends AppCompatActivity implements View.OnC
     private static final String TAG = "QoEVideoScoreActivity";
     private QoEVideoInfo qoEVideoInfo;
     private QoEHTTPInfo qoEHTTPInfo;
+    private RelativeLayout rdivLoading,rdivliuchang,rdivqingxidu;
     private LinearLayout iv_rating_div_1, iv_rating_div_2, iv_rating_div_3, iv_rating_div_4, iv_rating_div_5;
     private LinearLayout iv_qx_div_1, iv_qx_div_2, iv_qx_div_3, iv_qx_div_4, iv_qx_div_5;
     private LinearLayout iv_qd_div_1, iv_qd_div_2, iv_qd_div_3, iv_qd_div_4, iv_qd_div_5;//启动速度
@@ -68,6 +70,9 @@ public class QoEVideoScoreActivity extends AppCompatActivity implements View.OnC
             qoEHTTPInfo = gson.fromJson(qoEHTTPInfoJson, QoEHTTPInfo.class);
 
         }
+        rdivLoading=findViewById(R.id.rdivLoading);rdivLoading.setVisibility(View.GONE);
+        rdivliuchang=findViewById(R.id.rdivliuchang);rdivliuchang.setVisibility(View.GONE);
+        rdivqingxidu=findViewById(R.id.rdivqingxidu);rdivqingxidu.setVisibility(View.GONE);
 
         init();
         WaitForSubmit();
@@ -493,28 +498,28 @@ public class QoEVideoScoreActivity extends AppCompatActivity implements View.OnC
             return;
         }
         if (ECLATIRY == 0) { //清晰度打分
-            String str="请给清晰程度评分，谢谢！";
-            if(scoreKind.equals("QoEHTTP")) {
-                str="请给出白屏时间评分，谢谢！";
-            }
-            MsgBox(str);
-            return;
+//            String str="请给清晰程度评分，谢谢！";
+//            if(scoreKind.equals("QoEHTTP")) {
+//                str="请给出白屏时间评分，谢谢！";
+//            }
+//            MsgBox(str);
+//            return;
         }
         if (ELOAD == 0) { //启动速度打分
-            String str="请给加载速度评分，谢谢！";
-            if(scoreKind.equals("QoEHTTP")) {
-                str="请给出页面响应评分，谢谢！";
-            }
-            MsgBox(str);
-            return;
+//            String str="请给加载速度评分，谢谢！";
+//            if(scoreKind.equals("QoEHTTP")) {
+//                str="请给出页面响应评分，谢谢！";
+//            }
+//            MsgBox(str);
+//            return;
         }
         if (ESTALL == 0) {  //流畅速度打分
-            String str="请给流畅速度评分，谢谢！";
-            if(scoreKind.equals("QoEHTTP")) {
-                str="请给出整体加载评分，谢谢！";
-            }
-            MsgBox(str);
-            return;
+//            String str="请给流畅速度评分，谢谢！";
+//            if(scoreKind.equals("QoEHTTP")) {
+//                str="请给出整体加载评分，谢谢！";
+//            }
+//            MsgBox(str);
+//            return;
         }
         if(scoreKind.equals("QoEVideo")) {
             qoEVideoInfo.ECLATIRY = ECLATIRY;
@@ -552,15 +557,15 @@ public class QoEVideoScoreActivity extends AppCompatActivity implements View.OnC
         }
         if (ECLATIRY == 0) { //清晰度打分
 
-            return;
+           // return;
         }
         if (ELOAD == 0) { //启动速度打分
 
-            return;
+           // return;
         }
         if (ESTALL == 0) {  //流畅速度打分
 
-            return;
+           // return;
         }
         btnCommitOnClick();
     }

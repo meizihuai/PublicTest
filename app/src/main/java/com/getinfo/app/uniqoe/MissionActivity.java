@@ -4,11 +4,10 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.WindowManager;
+
+
 import android.webkit.JavascriptInterface;
-import android.webkit.WebResourceResponse;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
 
 import com.getinfo.sdk.qoemaster.GlobalInfo;
 import com.getinfo.sdk.qoemaster.PhoneInfo;
@@ -17,8 +16,11 @@ import com.google.gson.Gson;
 import java.util.Date;
 
 //任务管理界面，本界面是H5混合开发模式，任务管理界面实质是webView运行的H5页面
-public class MissionActivity extends AppCompatActivity {
-    private WebView webView;
+public class MissionActivity extends WebViewActivity {
+    private  String TAG="MissionActivity";
+    public ProgressBar progressBar;
+    public  MissionActivity mActivity;
+    private com.tencent.smtt.sdk.WebView webView;
  //   private String HTMLUrl = "http://10.253.12.105:8849/PublicTestH5Page/Amap.html";
     private String HTMLUrl = "http://221.238.40.153:7062/html/PublicTestH5Page/index.html";
     @Override
@@ -28,46 +30,15 @@ public class MissionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_mission);
         StatusBarUtil.setColor(this,0x05ACED,0);
 
-        webView = findViewById(R.id.webView);
-        WebSettings webSettings = webView.getSettings();
-        // 设置与Js交互的权限
-        webSettings.setJavaScriptEnabled(true);
-        // 设置允许JS弹窗
-        webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
-        // webView.addJavascriptInterface(qoEWorker.new JsInteraction(), "android");
-        // 防止webView刷新页面的时候跳转到系统浏览器
-        webView.setWebViewClient(new WebViewClient(){
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                view.loadUrl(url);
-                return true;
-            }
-            @Override
-            public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
-                url = url.toLowerCase();
-                if(url.contains("http://221.238.40.153")){
-                    return super.shouldInterceptRequest(view, url);
-                }else{
-                    Log.i("MissionActivity","拦截到一条广告,url="+url);
-                    return new WebResourceResponse(null,null,null);
-                }
-            }
-        });
-        webView.addJavascriptInterface(new JsInteraction(), "android");
-        HTMLUrl=HTMLUrl+"?"+new Date();
-        webView.loadUrl(HTMLUrl);
+        mActivity=this;
+        progressBar=findViewById(R.id.progressBar);
+        HTMLUrl=HTMLUrl+"?t="+System.currentTimeMillis();
+        JsInteraction jsInteraction=new JsInteraction();
+        iniWebView(this,jsInteraction, HTMLUrl,TAG+"Console","android",progressBar);
+
     }
-    public   void RunJs(final String js){
-        webView.post(new Runnable() {
-            @Override
-            public void run() {
-                webView.loadUrl("javascript:"+js);
-            }
-        });
-    }
+
     public class JsInteraction {
-        public JsInteraction() {
-        }
 
         @JavascriptInterface
         public void doAndroidCode(String message) {

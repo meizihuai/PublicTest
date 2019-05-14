@@ -1,5 +1,6 @@
 package com.getinfo.app.uniqoe;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
@@ -11,14 +12,10 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
-import android.webkit.ConsoleMessage;
+
 import android.webkit.GeolocationPermissions;
 import android.webkit.JavascriptInterface;
-import android.webkit.WebChromeClient;
-import android.webkit.WebResourceResponse;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.getinfo.app.uniqoe.utils.AboutInfo;
@@ -26,16 +23,28 @@ import com.getinfo.sdk.qoemaster.DownloadUtils;
 import com.getinfo.sdk.qoemaster.GlobalInfo;
 import com.google.gson.Gson;
 import com.googlecode.mp4parser.boxes.AC3SpecificBox;
+import com.tencent.smtt.export.external.interfaces.ConsoleMessage;
+import com.tencent.smtt.export.external.interfaces.GeolocationPermissionsCallback;
+import com.tencent.smtt.sdk.WebChromeClient;
+import com.tencent.smtt.sdk.WebSettings;
+import com.tencent.smtt.sdk.WebView;
+import com.tencent.smtt.sdk.WebViewClient;
 
 import java.io.Console;
 import java.util.Date;
 
-public class AboutActivity extends AppCompatActivity {
+import okhttp3.HttpUrl;
+
+public class AboutActivity extends WebViewActivity {
     public String TAG="AboutActivity";
-    private WebView webView;
+    public  AboutActivity mActivity;
+    public ProgressBar progressBar;
+    private com.tencent.smtt.sdk.WebView webView;
    // private String HTMLUrl = "http://10.253.12.105:8848/PublicTestH5Page/About.html";
      private String HTMLUrl = "http://221.238.40.153:7062/html/PublicTestH5Page/About.html";
     //private String HTMLUrl = "http://221.238.40.153:7062/html/PublicTestH5Page/APPDataTrans.html";
+    //private  String HTMLUrl="http://debugtbs.qq.com";
+   // private String HTMLUrl="http://10.253.12.105:8848/PublicTestH5Page/About.html";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,91 +52,17 @@ public class AboutActivity extends AppCompatActivity {
         setContentView(R.layout.activity_about);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         StatusBarUtil.setColor(this,0x05ACED,0);
-        iniWebView();
+        mActivity=this;
+        progressBar=findViewById(R.id.progressBar);
+        HTMLUrl=HTMLUrl+"?t="+System.currentTimeMillis();
+        JsInteraction jsInteraction=new JsInteraction();
+        iniWebView(this,jsInteraction, HTMLUrl,TAG+"Console","android",progressBar);
     }
-    private void iniWebView() {
-        webView = findViewById(R.id.webView);
-        webView.setWebViewClient(new WebViewClient(){
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                view.loadUrl(url);
-                return true;
-            }
-            @Override
-            public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
-                url = url.toLowerCase();
-                if(url.contains("http://221.238.40.153")){
-                    return super.shouldInterceptRequest(view, url);
-                }else{
-                    Log.i(TAG,"拦截到一条广告,url="+url);
-                    return new WebResourceResponse(null,null,null);
-                }
-            }
-        });
-
-
-        WebSettings webSettings = webView.getSettings();
-        webSettings.setJavaScriptEnabled(true);
-        webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
-
-        webSettings.setDomStorageEnabled(true);
-        webView.setWebChromeClient(new WebChromeClient() {
-            @Override
-            public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
-                callback.invoke(origin, true, false);
-                super.onGeolocationPermissionsShowPrompt(origin, callback);
-            }
-
-            @Override
-            public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-                Log.i("WebViewConsoleAbout", "[" + consoleMessage.messageLevel() + "] " + consoleMessage.message() + "(" + consoleMessage.sourceId() + ":" + consoleMessage.lineNumber() + ")");
-                return super.onConsoleMessage(consoleMessage);
-            }
-
-
-        });
-        HTMLUrl = HTMLUrl + "?" + new Date();
-        JsInterface jsInterface = new JsInterface() {
-            @Override
-            public void onBack() {
-                Log.i(TAG, "onBack");
-                finish();
-            }
-            @Override
-            public void onGetUpdate(String url,String appName,String dirName , Activity activity){
-                url = url + "?t=" + System.currentTimeMillis();
-                DownloadUtils du = new DownloadUtils(activity);
-                du.download(url, appName, dirName);
-            }
-        };
-        webView.addJavascriptInterface(new JsInteraction(jsInterface,this), "android");
-        webView.loadUrl(HTMLUrl);
-    }
-    public   void RunJs(final String js){
-        webView.post(new Runnable() {
-            @Override
-            public void run() {
-                webView.loadUrl("javascript:"+js);
-            }
-        });
-    }
-    public interface JsInterface{
-        void onBack();
-        void onGetUpdate(String url,String appName,String dirName,Activity activity);
-    }
-
     public class JsInteraction {
-        private JsInterface jsInterface;
-        private Activity activity;
-        public JsInteraction( JsInterface jsInterface,Activity activity) {
-            this.jsInterface=jsInterface;
-            this.activity=activity;
-        }
-
         @JavascriptInterface
         public void goBack(String msg) {
             Log.i(TAG,"goBack");
-            jsInterface.onBack();
+            mActivity.finish();
         }
         @JavascriptInterface
         public  void getAboutInfo(String msg){
@@ -148,14 +83,14 @@ public class AboutActivity extends AppCompatActivity {
         @JavascriptInterface
         public  void  getUpdate(String url,String appName,String dirName){
             Log.i(TAG,"getUpdate,url="+url+",appName="+appName+",dirName="+dirName);
-            jsInterface.onGetUpdate(url,appName,dirName,activity);
+            url = url + "?t=" + System.currentTimeMillis();
+            DownloadUtils du = new DownloadUtils(mActivity);
+            du.download(url, appName, dirName);
         }
 
         @JavascriptInterface
         public  void callAPPMethod(String msg){
             RunJs("onReceiveMsg('"+msg+"')");
         }
-
-
     }
 }

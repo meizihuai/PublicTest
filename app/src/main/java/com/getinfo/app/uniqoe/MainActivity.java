@@ -79,12 +79,9 @@ import java.util.Map;
 
 //主要 Activity，包含TabPages,QOER数据的上传在此
 public class MainActivity extends PermissionCheckActivity implements FrmMainTest.OnFragmentInteractionListener
-        , FrmQoEVideoTest.OnFragmentInteractionListener
+        , FrmQoEVideoHTML.OnFragmentInteractionListener
         , FrmMe.OnFragmentInteractionListener
         , FrmOneKeyTest.OnFragmentInteractionListener
-        , FrmAmap.OnFragmentInteractionListener
-        , FrmAmapHTML.OnFragmentInteractionListener
-        , FrmQoEVideoHTML.OnFragmentInteractionListener
         , FrmHTTP.OnFragmentInteractionListener {
     private QoEWorker qoeWorker;
     private Activity mActivity;
@@ -93,13 +90,14 @@ public class MainActivity extends PermissionCheckActivity implements FrmMainTest
     private String version = "";
     private int testCount = 0;
     private String token = "928453310";
+    private FrmQoEVideoHTML frmQoEVideoHTML;
 
 
     private BottomBar bottomBar;
     private PowerManager.WakeLock wakeLock = null;
     private FrmMainTest frmMainTest;
 
-    private FrmQoEVideoHTML frmQoEVideoHTML;
+
     private FrmOneKeyTest frmOneKeyTest;
     private FrmMe frmMe;
     private FrmHTTP frmHTTP;
@@ -311,7 +309,6 @@ public class MainActivity extends PermissionCheckActivity implements FrmMainTest
         frmMainTest = (FrmMainTest) bottomBar.getFragment(1);
         frmOneKeyTest = (FrmOneKeyTest) bottomBar.getFragment(2);
         frmHTTP = (FrmHTTP) bottomBar.getFragment(3);
-//        frmAmapHTML = (FrmAmapHTML) bottomBar.getFragment(3);
         frmMe = (FrmMe) bottomBar.getFragment(4);
 
 
@@ -429,66 +426,12 @@ public class MainActivity extends PermissionCheckActivity implements FrmMainTest
 //        }
         qoeWorker.startWork();
         if (frmMe != null) {
-            final View view = frmMe.getMyView();
-            if (view != null) {
-                Log.i("startActivity","CheckDevicePermission");
-                frmMe.CheckDevicePermission();
-                Log.i("startActivity","CheckCanUpdate");
-                frmMe.CheckCanUpdate();
-                Switch switchQoEScore = frmMe.getMyView().findViewById(R.id.switchQoESocre);
-                Switch switchQoEScreenRecord = frmMe.getMyView().findViewById(R.id.switchQoEScreenRecord);
-                Spinner spinner_serverIp = frmMe.getMyView().findViewById(R.id.spinner_serverUrl);
-                final Spinner spinner_videoType = frmMe.getMyView().findViewById(R.id.spinner_videoType);
-                final Setting tmpSetting = GlobalInfo.getSetting(this);
-                if (tmpSetting != null) {
-                    switchQoEScore.setChecked(tmpSetting.switchQoEScore);
-                    switchQoEScreenRecord.setChecked(tmpSetting.switchQoEScreenRecord);
-                    String serverUrl = tmpSetting.serverUrl;
-                    QoEVideoSource.wantType = tmpSetting.videoWantType;
-                    for (int i = 0; i < spinner_serverIp.getAdapter().getCount(); i++) {
-                        if (serverUrl.equals(spinner_serverIp.getAdapter().getItem(i).toString())) {
-                            spinner_serverIp.setSelection(i);
-                            break;
-                        }
-                    }
-                }
-                Log.i("startActivity","GetQoEVideoSourceTypeList");
-                HTTPHelper.GetH((GlobalInfo.serverUrl + "?func=GetQoEVideoSourceTypeList"), new HTTPHelper.HTTPResponse() {
-                    @Override
-                    public void OnNormolResponse(NormalResponse np) {
-                        if (np.result && np.data != null) {
-                            try {
-                                List<String> list = new ArrayList<>();
-                                list = new Gson().fromJson(np.data.toString(), list.getClass());
-                                final List<String> tmp = list;
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        frmMe.iniSpinnerVideoType(tmp);
-                                        if (tmpSetting != null) {
-                                            for (int i = 0; i < spinner_videoType.getAdapter().getCount(); i++) {
-                                                if (tmpSetting.videoWantType.equals(spinner_videoType.getAdapter().getItem(i).toString())) {
-                                                    spinner_videoType.setSelection(i);
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                    }
-                                });
-
-                            } catch (Exception e) {
-                                Log.i("startActivity","GetQoEVideoSourceTypeList failed "+e.getMessage());
-                            }
-                        }
-                    }
-                });
-            }
-
-
+            frmMe.init();
         }else{
             Log.i("startActivity","frmMe is null");
         }
         try {
+            Log.i("startActivity","开启录屏文件上传监测线程");
             LogHelper.log(this, "开启录屏文件上传监测线程...");
             ScreenRecordUploadHelper.StartWork(this);
         } catch (Exception e) {
