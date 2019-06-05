@@ -25,6 +25,7 @@ public class QoEWorker {
     private  boolean islogined=false;
     private  boolean isSetedImeiAndImsi=false;
     private InterfaceCls.IQoEWorkerInfo iQoEWorkerInfo;
+    private int qoerInterval=5;
 
     /**
      * 初始化
@@ -47,7 +48,8 @@ public class QoEWorker {
         }
         GlobalInfo.iniSetting(context);
     }
-    public  void startWork(){
+    public  void startWork(int qoerInterval){
+        this.qoerInterval=qoerInterval;
         Setting setting = GlobalInfo.getSetting(context);
         UploadDataHelper.getInstance().setServerURL(setting.serverUrl);
         QoEVideoSource.serverURL = setting.serverUrl;
@@ -85,7 +87,7 @@ public class QoEWorker {
 
                     }
                     try {
-                        Thread.sleep(5000);
+                        Thread.sleep(qoerInterval*1000);
                     } catch (Exception e) {
 
                     }
@@ -267,7 +269,7 @@ public class QoEWorker {
                         Log.i("UploadLoadDataToServer", "error-->" + e.getMessage());
                     }
                     try {
-                        Thread.sleep(5000);
+                        Thread.sleep(qoerInterval*1000);
                     } catch (Exception e) {
 
                     }

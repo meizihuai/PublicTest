@@ -8,6 +8,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.OrientationHelper;
+import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -19,6 +21,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+//import com.getinfo.app.uniqoe.slideview.MyAdapter;
+//import com.getinfo.app.uniqoe.slideview.MyLayoutManager;
+//import com.getinfo.app.uniqoe.slideview.OnViewPagerListener;
+//import com.getinfo.app.uniqoe.slideview.VideoBean;
+import com.getinfo.app.uniqoe.EnitityCls.QoEMissionInfo;
 import com.getinfo.app.uniqoe.utils.AudioRecordHelper;
 import com.getinfo.app.uniqoe.utils.Config;
 import com.getinfo.app.uniqoe.utils.ScreenRecordUploadHelper;
@@ -30,6 +37,7 @@ import com.getinfo.sdk.qoemaster.GlobalInfo;
 import com.getinfo.sdk.qoemaster.Interfaces.InterfaceCls;
 import com.getinfo.sdk.qoemaster.LocationInfo;
 import com.getinfo.sdk.qoemaster.PhoneInfo;
+import com.getinfo.sdk.qoemaster.QoEBlackPoint;
 import com.getinfo.sdk.qoemaster.QoEVideoInfo;
 import com.getinfo.sdk.qoemaster.QoEVideoSource;
 import com.getinfo.sdk.qoemaster.Setting;
@@ -107,27 +115,88 @@ public class QoEVideoPlayerActivity extends AppCompatActivity {
     private boolean isInit = false;
     private boolean isUploaded = false;
     private boolean isAskforScreenRecord = false;
+    private QoEMissionInfo qoEMissionInfo=null;
 
     Thread screenRecordThread;//录视频要放在线程里去执行
+
+
+    ////////
+    private RecyclerView mRecyclerView;
+//    private MyAdapter mAdapter;
+//    private MyLayoutManager myLayoutManager;
+//    private List urlList ;
+//    private List<VideoBean> dataList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_qo_evideo_player);
+
+        // initData(); //TODO RecyclerView 滑动初始化 // 暂时没有使用 使用的是手势识别
         Log.i("QoEVideoPlayerStart", "===================");
         Log.i("QoEVideoPlayerStart", "onCreate");
-      //  setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        //  setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         isPhoneVertical=DeviceHelper.isPhoneVertical(this);
         StatusBarUtil.setColor(this, 0x27292E, 0);
         Intent getIntent = getIntent();
         String piJson = getIntent.getStringExtra("piJson");
+        String qoEMissionJson=getIntent.getStringExtra("qoeMissionJson");
+        if(!"".equals(qoEMissionJson)){
+            qoEMissionInfo=new Gson().fromJson(qoEMissionJson,QoEMissionInfo.class);
+        }
         OnRecivePhoneInfo(piJson);
         qoEVideoPlayerActivity=this;
         init();
     }
-
-
+//    private void initData(){
+//        mRecyclerView = findViewById(R.id.recycler);
+//        myLayoutManager = new MyLayoutManager(QoEVideoPlayerActivity.this, OrientationHelper.VERTICAL,false);
+//        mAdapter = new MyAdapter(dataList);
+//        mRecyclerView.setLayoutManager(myLayoutManager);
+//        mRecyclerView.setAdapter(mAdapter);
+//
+//        urlList = new ArrayList<String>();
+//        urlList.add("http://chuangfen.oss-cn-hangzhou.aliyuncs.com/public/attachment/201805/100651/201805181532123423.mp4");
+//        urlList.add("http://chuangfen.oss-cn-hangzhou.aliyuncs.com/public/attachment/201803/100651/201803151735198462.mp4");
+//        urlList.add("http://chuangfen.oss-cn-hangzhou.aliyuncs.com/public/attachment/201803/100651/201803150923220770.mp4");
+//        urlList.add("http://chuangfen.oss-cn-hangzhou.aliyuncs.com/public/attachment/201803/100651/201803150922255785.mp4");
+//        urlList.add("http://chuangfen.oss-cn-hangzhou.aliyuncs.com/public/attachment/201803/100651/201803150920130302.mp4");
+//        urlList.add("http://chuangfen.oss-cn-hangzhou.aliyuncs.com/public/attachment/201803/100651/201803141625005241.mp4");
+//        urlList.add("http://chuangfen.oss-cn-hangzhou.aliyuncs.com/public/attachment/201803/100651/201803141624378522.mp4");
+//        urlList.add("http://chuangfen.oss-cn-hangzhou.aliyuncs.com/public/attachment/201803/100651/201803131546119319.mp4");
+//        dataList = new ArrayList<>();
+//        for (int k=0;k<urlList.size();k++){
+//            VideoBean videoBean = new VideoBean();
+//            videoBean.setVideoName(k+":视频标题");
+//            videoBean.setVideoUrl((String)urlList.get(k));
+//            dataList.add(videoBean);
+//        }
+//        initListener();
+//    }
+//    private void initListener(){
+//        myLayoutManager.setOnViewPagerListener(new OnViewPagerListener() {
+//            @Override
+//            public void onInitComplete() {
+//            }
+//            @Override
+//            public void onPageRelease(boolean isNext, int position) {
+//                Log.e(TAG,"onPageRelease:"+position +" 下一页:"+isNext);
+//                int index = 0;
+//                if (isNext){
+//                    index = 0;
+//                }else {
+//                    index = 1;
+//                }
+//                // releaseVideo(index);
+//            }
+//            @Override
+//            public void onPageSelected(int position, boolean isNext) {
+//                Log.e(TAG,"onPageSelected:"+position +" 下一页:"+isNext);
+//                // playVideo(position);
+//            }
+//        });
+//    }
     private void startRecord() {
         mediaProjectionManager = (MediaProjectionManager) this.getSystemService(MEDIA_PROJECTION_SERVICE);
         WindowManager manager = this.getWindowManager();
@@ -244,7 +313,7 @@ public class QoEVideoPlayerActivity extends AppCompatActivity {
     private void init() {
         LinearLayout divInfo=findViewById(R.id.divInfo);
         divInfo.bringToFront();
-      //  Button btnNext = findViewById(R.id.btnNext);
+        //  Button btnNext = findViewById(R.id.btnNext);
         myWatchTimes = findViewById(R.id.myWatchTimes);
 //        btnNext.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -273,51 +342,60 @@ public class QoEVideoPlayerActivity extends AppCompatActivity {
             }
         };
         IniPlayer();
-         setGestureListener();
+        setGestureListener();
         mIsLiveStreaming = false;
-
         StartPlayVideo();
-
-
     }
-
-    //设置手势滑动监听器，为后面滑动切换视频做准备
+    //上报QoE黑点
+    private void  UploadQoEBlackPoint(String mark,String url){
+        QoEBlackPoint qoeBlackPoint=new QoEBlackPoint();
+        qoeBlackPoint.AID=GlobalInfo.AID;
+        qoeBlackPoint.Pi=GlobalInfo.getPi();
+        qoeBlackPoint.Mark=mark;
+        qoeBlackPoint.Type="QoEBlack";
+        qoeBlackPoint.VideoUrl=url;
+        qoeBlackPoint.UploadToServer();
+    }
+    private boolean moveFlag = false;//false 只是点击没有移动  true 移动了
+    //TODO 设置手势滑动监听器，为后面滑动切换视频做准备
     private void setGestureListener() {
         LinearLayout videoDiv=findViewById(R.id.videoDiv);
         videoDiv.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
+            //            @Override
 //            public boolean performClick() {
 //                return super.performClick();
 //            }
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 // TODO Auto-generated method stub
-               // Log.i("GestureHasaki", "onTouch");
+                // Log.i("GestureHasaki", "onTouch");
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         mPosX = event.getX();
                         mPosY = event.getY();
+                        moveFlag = false;
                         //return false;
                         mMediaController.performClick();
                         break;
                     case MotionEvent.ACTION_MOVE:
                         mCurPosX = event.getX();
                         mCurPosY = event.getY();
-
+                        moveFlag = true;
                         break;
                     case MotionEvent.ACTION_UP:
-                        if (mCurPosY - mPosY > 0
-                                && (Math.abs(mCurPosY - mPosY) > 300)) {
-                            //向下滑動
-                            Log.i("GestureHasaki", "向下");
-                            StartPlayVideo();
-                        } else if (mCurPosY - mPosY < 0
-                                && (Math.abs(mCurPosY - mPosY) > 300)) {
-                            //向上滑动
-                            Log.i("GestureHasaki", "向上");
-                            StartPlayVideo();
+                        if (moveFlag){
+                            if (mCurPosY - mPosY > 0
+                                    && (Math.abs(mCurPosY - mPosY) > 300)) {
+                                //向下滑動
+                                Log.i("GestureHasaki", "向下");
+                                StartPlayVideo();
+                            } else if (mCurPosY - mPosY < 0
+                                    && (Math.abs(mCurPosY - mPosY) > 300)) {
+                                //向上滑动
+                                Log.i("GestureHasaki", "向上");
+                                StartPlayVideo();
+                            }
                         }
-
                         break;
                 }
                 return true;
@@ -425,9 +503,9 @@ public class QoEVideoPlayerActivity extends AppCompatActivity {
             setThisPi(gpi);
         }
         PhoneInfo mypi = getThisPi();
-      //Log.i("SubStartPlayVideo", "-->SubStartPlayVideo " + mypi.lon + "," + mypi.lat);
+        //Log.i("SubStartPlayVideo", "-->SubStartPlayVideo " + mypi.lon + "," + mypi.lat);
         qoEVideoInfo = new QoEVideoInfo(mypi);
-         Log.i("SubStartPlayVideo", qoEVideoInfo.pi.lon+","+qoEVideoInfo.pi.lat);
+        Log.i("SubStartPlayVideo", qoEVideoInfo.pi.lon+","+qoEVideoInfo.pi.lat);
         if (isRecordScreen) {
             qoEVideoInfo.SCREENRECORD_FILENAME = UplanScreenRecordFileName;
         } else {
@@ -439,14 +517,17 @@ public class QoEVideoPlayerActivity extends AppCompatActivity {
         IniPlayer();
         //  QoEVideoSource.QoEVideoSourceInfo qoEVideoSourceInfo = QoEVideoSource.getNewQoEVideoSourceInfo();
 
-         InterfaceCls.IQoEVideoSource iQoEVideoSource = new InterfaceCls.IQoEVideoSource() {
+        InterfaceCls.IQoEVideoSource iQoEVideoSource = new InterfaceCls.IQoEVideoSource() {
             @Override
             public void onNewQoEVideoSourceInfo(final QoEVideoSource.QoEVideoSourceInfo qoEVideoSourceInfo) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        // UploadQoEBlackPoint("ask video failed","");
                         if (qoEVideoSourceInfo == null) {
-                            mStatInfoTextView.setText("视频地址请求失败，请重试");
+
+                            mStatInfoTextView.setText("视频地址请求失败，正在重试...");
+                            SubStartPlayVideo();
                             return;
                         }
                         videoPath = qoEVideoSourceInfo.url;
@@ -531,9 +612,21 @@ public class QoEVideoPlayerActivity extends AppCompatActivity {
                     }
                 });
             }
+
+            @Override
+            public void onError(String s) {
+                UploadQoEBlackPoint("ask video failed","");
+                mStatInfoTextView.setText("视频地址请求失败，正在重试...");
+                SubStartPlayVideo();
+                return;
+            }
         };
         mStatInfoTextView.setText("请求视频地址...");
-        QoEVideoSource.getNewQoEVideoSourceInfoAsync(iQoEVideoSource);
+        String qoeMissionWantType="";
+        if(qoEMissionInfo!=null){
+            qoeMissionWantType=qoEMissionInfo.MissionBody.VideoType;
+        }
+        QoEVideoSource.getNewQoEVideoSourceInfoAsync(iQoEVideoSource,qoeMissionWantType);
     }
 
     //初始化播放器
@@ -641,6 +734,7 @@ public class QoEVideoPlayerActivity extends AppCompatActivity {
             Log.i(TAG, "qoEVideoInfo.VIDEO_BUFFER_TOTAL_TIME=" + qoEVideoInfo.VIDEO_BUFFER_TOTAL_TIME);
             Log.i(TAG, "qoEVideoInfo.VIDEO_STALL_TOTAL_TIME=" + qoEVideoInfo.VIDEO_STALL_TOTAL_TIME);
             Log.i(TAG, "qoEVideoInfo.VIDEO_STALL_NUM=" + qoEVideoInfo.VIDEO_STALL_NUM);
+
             qoEVideoInfo.MOVE_SPEED = (long) GlobalInfo.getLocationInfo().Speed;
             qoEVideoInfo.PHONE_ELECTRIC_END = pi.PHONE_ELECTRIC;
             qoEVideoInfo.SCREEN_RESOLUTION_WIDTH = DeviceHelper.getPhoneWidth(this);
@@ -676,14 +770,14 @@ public class QoEVideoPlayerActivity extends AppCompatActivity {
             qoEVideoInfo.APKNAME = versionName;
             qoEVideoInfo.ENVIRONMENTAL_NOISE = AudioRecordHelper.getNoiseValue() + "";
             qoEVideoInfo.UE_INTERNAL_IP = GlobalInfo.getIPAddress(this);
-          //  qoEVideoInfo.LIGHT_INTENSITY = GlobalInfo.getLightIntensity();
-            UpdateLoadQoEVideoInfo(qoEVideoInfo);
+            //  qoEVideoInfo.LIGHT_INTENSITY = GlobalInfo.getLightIntensity();
+            subUploadQoEVideoInfo(qoEVideoInfo);
         } catch (Exception e) {
             Log.i(TAG, "UploadQoEVideoInfo--Err-->" + e.toString() + " step=" + step);
         }
     }
 
-    private void UpdateLoadQoEVideoInfo(QoEVideoInfo qoEVideoInfo) {
+    private void subUploadQoEVideoInfo(QoEVideoInfo qoEVideoInfo) {
 //        ScreenRecorder screenRecorder = GlobalInfo.getScreenRecorder();
 //        if (screenRecorder != null) {
 //            screenRecorder.stop();
@@ -694,8 +788,13 @@ public class QoEVideoPlayerActivity extends AppCompatActivity {
         if (pi != null) {
             qoEVideoInfo.setPhoneInfo(pi);
         }
-        qoEVideoInfo.BUSINESS_TYPE = "QoEVideo";
-        qoEVideoInfo.BUSINESSTYPE = "QoEVideo";
+        if(qoEMissionInfo!=null){
+            qoEVideoInfo.BUSINESS_TYPE="QoEVideo On QoEMission";
+            qoEVideoInfo.BUSINESSTYPE="QoEVideo On QoEMission";
+        }else{
+            qoEVideoInfo.BUSINESS_TYPE="QoEVideo";
+            qoEVideoInfo.BUSINESSTYPE="QoEVideo";
+        }
         qoEVideoInfo.APKNAME = "众手测试";
         qoEVideoInfo.APKVERSION = versionName;
         String adj_signal = qoEVideoInfo.pi.ADJ_SIGNAL;
@@ -705,6 +804,9 @@ public class QoEVideoPlayerActivity extends AppCompatActivity {
         boolean isScore = true;
         if (setting != null) {
             isScore = setting.switchQoEScore;
+        }
+        if(qoEMissionInfo!=null){
+            isScore=false;
         }
         if (isScore) {
             Gson gson = new Gson();
@@ -721,6 +823,9 @@ public class QoEVideoPlayerActivity extends AppCompatActivity {
         } else {
             UploadDataHelper uploadDataHelper = UploadDataHelper.getInstance();
             uploadDataHelper.UploadDataToServer(qoEVideoInfo);
+            if(qoEMissionInfo!=null){
+                this.finish();
+            }
             StartPlayVideo();
         }
     }
@@ -884,9 +989,11 @@ public class QoEVideoPlayerActivity extends AppCompatActivity {
             long duration = mVideoView.getDuration();
             qoEVideoInfo.VIDEO_TOTAL_TIME = duration;
             startTime = new Date();
+
             Log.i(TAG, "duration= " + duration);
         }
     };
+
     private PLOnErrorListener mOnErrorListener = new PLOnErrorListener() {
         @Override
         public boolean onError(int errorCode) {
@@ -898,6 +1005,7 @@ public class QoEVideoPlayerActivity extends AppCompatActivity {
                      */
                     mStatInfoTextView.setText("播放失败，视频地址无效，地址为" + videoPath);
                     Log.e(TAG, "IO Error!");
+                    StartPlayVideo();
                     return false;
                 case PLOnErrorListener.ERROR_CODE_OPEN_FAILED:
                     mStatInfoTextView.setText("播放失败，播放器加载失败");
@@ -906,9 +1014,13 @@ public class QoEVideoPlayerActivity extends AppCompatActivity {
                 case PLOnErrorListener.ERROR_CODE_SEEK_FAILED:
                     mStatInfoTextView.setText("播放失败，视频播放失败");
                     //Utils.showToastTips(myView.this, "failed to seek !");
+                    UploadQoEBlackPoint("seek failed",videoPath);
+                    StartPlayVideo();
                     return true;
                 case PLOnErrorListener.ERROR_CODE_CACHE_FAILED:
                     mStatInfoTextView.setText("播放失败，视频缓冲失败");
+                    UploadQoEBlackPoint("cache failed",videoPath);
+                    StartPlayVideo();
                     //Utils.showToastTips(myView.this, "failed to cache url !");
                     break;
                 default:

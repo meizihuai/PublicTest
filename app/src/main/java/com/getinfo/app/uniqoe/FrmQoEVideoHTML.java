@@ -16,6 +16,8 @@ import android.webkit.JavascriptInterface;
 
 import android.widget.ProgressBar;
 
+import com.getinfo.app.uniqoe.EnitityCls.QoEMissionInfo;
+import com.getinfo.app.uniqoe.Interfaces.IQoEMissionListener;
 import com.getinfo.sdk.qoemaster.PhoneInfo;
 import com.google.gson.Gson;
 
@@ -36,13 +38,35 @@ public class FrmQoEVideoHTML extends Fragment {
 
     private PhoneInfo pi;
     private boolean flagGetFristPI = false;
+    private boolean flagIsThisShowFront=false;
     private Handler qoeVideoPlayerHandler;
+    private IQoEMissionListener qoEMissionListener;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         myView = inflater.inflate(R.layout.fragment_frm_qoe_video_html, container, false);
-        iniWebView();
+        init();
         return myView;
+    }
+    private  void  init(){
+        qoEMissionListener=new IQoEMissionListener() {
+            @Override
+            public void onQoEMissionChange(boolean flag, QoEMissionInfo info) {
+                if(!flagGetFristPI || !flagIsThisShowFront)return;
+                if(flag && info!=null) {
+                    final QoEMissionInfo qoEMissionInfo=info;
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            StartQoEVideoTest(qoEMissionInfo);
+                        }
+                    });
+                   // StartQoEVideoTest(info);
+                }
+            }
+        };
+        Module.qoEMissionListener=qoEMissionListener;
+        iniWebView();
     }
     private void iniWebView() {
         progressBar=myView.findViewById(R.id.progressBar);
@@ -62,11 +86,11 @@ public class FrmQoEVideoHTML extends Fragment {
         }
         @JavascriptInterface
         public void startQoEVideoTest(String msg) {
-            StartQoEVideoTest();
+            StartQoEVideoTest(null);
         }
     }
     //开始视频测试按钮
-    private void StartQoEVideoTest() {
+    private void StartQoEVideoTest(QoEMissionInfo qoEMissionInfo) {
         if(!flagGetFristPI)return;
         if(pi==null)return;
         Gson gson=new Gson();
@@ -75,9 +99,11 @@ public class FrmQoEVideoHTML extends Fragment {
         qoeVideoPlayerHandler=qoEVideoPlayerActivity.getHandler();
         Intent intent = new Intent(getActivity(),qoEVideoPlayerActivity.getClass());
         intent.putExtra("piJson", json);
+        String qoeMissionJson="";
+        if(qoEMissionInfo!=null)qoeMissionJson=gson.toJson(qoEMissionInfo);
+        intent.putExtra("qoeMissionJson", qoeMissionJson);
         videoPlayerIntent=intent;
         startActivity(videoPlayerIntent);
-
     }
     //主进程发新位置
     public void setLocations(double lon, double lat, double accuracy, double altitude, double speed, double satelliteCount) {
@@ -163,6 +189,18 @@ public class FrmQoEVideoHTML extends Fragment {
         super.onCreate(savedInstanceState);
 
     }
+
+    @Override
+    public  void onResume() {
+        super.onResume();
+        flagIsThisShowFront=true;
+    }
+    @Override
+    public  void onPause() {
+        super.onPause();
+        flagIsThisShowFront=false;
+    }
+
 
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {

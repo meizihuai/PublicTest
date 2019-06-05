@@ -53,6 +53,7 @@ import com.getinfo.sdk.qoemaster.Interfaces.InterfaceCls;
 import com.getinfo.sdk.qoemaster.LightSensorManager;
 import com.getinfo.sdk.qoemaster.LocationInfo;
 import com.getinfo.sdk.qoemaster.LogHelper;
+import com.getinfo.sdk.qoemaster.MyUtils.MyCatchUtils;
 import com.getinfo.sdk.qoemaster.NormalResponse;
 import com.getinfo.sdk.qoemaster.PhoneInfo;
 import com.getinfo.sdk.qoemaster.QoEVideoSource;
@@ -68,6 +69,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -153,18 +155,37 @@ public class MainActivity extends PermissionCheckActivity implements FrmMainTest
 
     }
 
+    /*  @Override
+      public boolean onKeyDown(int keyCode, KeyEvent event) {
+          if (keyCode == KeyEvent.KEYCODE_BACK) {
+              // moveTaskToBack(true);
+              return true;//不执行父类点击事件
+          } else {
+              return super.onKeyDown(keyCode, event);
+              // return super.dispatchKeyEvent(event);
+          }
+      }
+  */
+    private long firstTime;
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+        long secondTime = System.currentTimeMillis();
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            // moveTaskToBack(true);
-            return true;//不执行父类点击事件
-        } else {
-            return super.onKeyDown(keyCode, event);
-            // return super.dispatchKeyEvent(event);
+            if ( secondTime - firstTime < 2000) {
+              /*  MyTutuApplication.getEditor().clear();
+                MyTutuApplication.getEditor().commit();*/
+                this.finish();
+                System.exit(0);
+            } else {
+                Toast.makeText(MainActivity.this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
+                firstTime = System.currentTimeMillis();
+            }
+            return true;
         }
+        return super.onKeyDown(keyCode, event);
     }
 
-
+    public static final String TAG = "startPage";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -190,6 +211,8 @@ public class MainActivity extends PermissionCheckActivity implements FrmMainTest
 
         }
         iniUIs(); //初始化UI
+        Log.i("getScreenSize",getScreenSize(this)+"");
+
         Log.i("sHA1", sHA1(this)); //打印本app的SHA码
         // 版本判断。当手机系统大于 23(android6.0) 时，才有必要去判断权限是否获取
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -198,6 +221,25 @@ public class MainActivity extends PermissionCheckActivity implements FrmMainTest
             startWorkAfterPermissionCheck();
         }
     }
+    public static float getScreenSize(Context mContext) {
+
+
+        int densityDpi = mContext.getResources().getDisplayMetrics().densityDpi;
+        float scaledDensity = mContext.getResources().getDisplayMetrics().scaledDensity;
+        float density = mContext.getResources().getDisplayMetrics().density;
+        float xdpi = mContext.getResources().getDisplayMetrics().xdpi;
+        float ydpi = mContext.getResources().getDisplayMetrics().ydpi;
+        int width = mContext.getResources().getDisplayMetrics().widthPixels;
+        int height = mContext.getResources().getDisplayMetrics().heightPixels;
+
+        // 这样可以计算屏幕的物理尺寸
+        float width2 = (width / xdpi)*(width / xdpi);
+        float height2 = (height / ydpi)*(width / xdpi);
+
+        return (float) Math.sqrt(width2+height2);
+    }
+
+
     private void iniPermission() {
         super.askMultiplePermission(permissionArray, new IPermissionResult() {
             @Override
@@ -368,7 +410,7 @@ public class MainActivity extends PermissionCheckActivity implements FrmMainTest
 
         //数据流量开关
         boolean dataswitch=DeviceHelper.isMobileEnableReflex(this);
-       // Log.i("dataswitch","dataswitch="+dataswitch);
+        // Log.i("dataswitch","dataswitch="+dataswitch);
 
         qoeWorker = new QoEWorker();
         qoeWorker.init(this, new InterfaceCls.IQoEWorkerInfo() {
@@ -418,13 +460,21 @@ public class MainActivity extends PermissionCheckActivity implements FrmMainTest
         });
         qoeWorker.setApkVersion(version);
         qoeWorker.setApkName("UniQoE-QoEMaster");
+        try{
+            Thread.currentThread().setUncaughtExceptionHandler(new MyCatchUtils());
+            qoeWorker.startWork(600);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+
         //仅供调试使用 固定IP
 //        Setting setting=GlobalInfo.getSetting(this);
 //        if(setting!=null){
 //            setting.serverUrl="http://123.207.31.37:7062/default.ashx";
 //            GlobalInfo.setSetting(this,setting);
 //        }
-        qoeWorker.startWork();
+
         if (frmMe != null) {
             frmMe.init();
         }else{
@@ -450,7 +500,5 @@ public class MainActivity extends PermissionCheckActivity implements FrmMainTest
     }
 
 
-    //<editor-fold desc="权限操作 Ctrl+ALt+T">
 
-    //</editor-fold>
 }

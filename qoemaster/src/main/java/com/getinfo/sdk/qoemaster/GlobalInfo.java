@@ -21,6 +21,7 @@ public class GlobalInfo {
     public static String jarVersion="1.0.0.1";
     public static String apkName="QoEMaster";
     private static String defaultServerUrl="http://111.53.74.132:7062/default.ashx";
+    public  static String uplanServerUrl="http://111.53.74.132:7063";
     private static String settingFileName="qoeSetting.txt";
     public  static String AID="";
     public  static String serverUrl=defaultServerUrl;

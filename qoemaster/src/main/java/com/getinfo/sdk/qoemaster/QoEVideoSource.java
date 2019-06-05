@@ -43,13 +43,16 @@ public class QoEVideoSource {
     }
     private static QoEVideoSourceInfo[] qoEVideoSourceInfos;
     //从数据获取新的视频资源
-    public static QoEVideoSourceInfo getVideoSourceFromServer(){
+    public static QoEVideoSourceInfo getVideoSourceFromServer(String qoeMissionWantType){
         Log.i("getVideoSource","getVideoSourceFromServer");
         try{
             if(oldQoEVideoSourceInfo==null){
                 oldQoEVideoSourceInfo=new QoEVideoSourceInfo();
             }
             oldQoEVideoSourceInfo.wantType=wantType;
+            if(!"".equals(qoeMissionWantType)){
+                oldQoEVideoSourceInfo.wantType=qoeMissionWantType;
+            }
             oldQoEVideoSourceInfo.imsi= GlobalInfo.myDeviceImsi;
             PostMsg ps=new PostMsg("GetNewQoEVideoInfo",oldQoEVideoSourceInfo);
             final String requestBody = new Gson().toJson(ps);
@@ -103,7 +106,7 @@ public class QoEVideoSource {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                getVideoSourceFromServer();
+                getVideoSourceFromServer("");
             }
         }).start();
         while (true){
@@ -117,18 +120,18 @@ public class QoEVideoSource {
             }
         }
     }
-    public  static void getNewQoEVideoSourceInfoAsync(final InterfaceCls.IQoEVideoSource iQoEVideoSource){
+    public  static void getNewQoEVideoSourceInfoAsync(final InterfaceCls.IQoEVideoSource iQoEVideoSource,final String qoeMissionWantType){
         new Thread(new Runnable() {
             @Override
             public void run() {
                 for(int i = 0; i<5; i++) {
-                    QoEVideoSourceInfo qoEVideoSourceInfo = getVideoSourceFromServer();
+                    QoEVideoSourceInfo qoEVideoSourceInfo = getVideoSourceFromServer(qoeMissionWantType);
                     if(qoEVideoSourceInfo!=null){
                         iQoEVideoSource.onNewQoEVideoSourceInfo(qoEVideoSourceInfo);
                         return;
                     }
                 }
-                iQoEVideoSource.onNewQoEVideoSourceInfo(null);
+                iQoEVideoSource.onError("视频地址请求失败");
             }
         }).start();
     }

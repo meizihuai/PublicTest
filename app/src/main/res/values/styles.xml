@@ -42,4 +42,12 @@
     <style name="AppTheme.NoActionBar.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.NoActionBar.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <!-- 应用启动页(StartingWindow)的theme -->
+    <style name="AppTheme.StartingWindowTheme" parent="NoActionBarTheme">
+        <!-- 可以设置成纯颜色（设置一个和Activity UI相似的背景） -->
+        <item name="android:windowBackground">@color/startingwindow_bgcolor</item>
+        <!--也可以设置成一张图片 -->
+        <!-- <item name="android:windowBackground">@mipmap/startbg</item>-->
+    </style>
 </resources>

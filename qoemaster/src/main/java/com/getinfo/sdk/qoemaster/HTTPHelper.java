@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -45,7 +46,7 @@ public class HTTPHelper {
                     call.enqueue(new Callback() {
                         @Override
                         public void onFailure(Call call, IOException e) {
-                            httpResponse.OnNormolResponse(new NormalResponse(false,"请求失败"));
+                            httpResponse.OnNormolResponse(new NormalResponse(false,"请求失败"+e.getMessage(),url,""));
                         }
 
                         @Override
@@ -57,39 +58,46 @@ public class HTTPHelper {
                                     NormalResponse np=gson.fromJson(result,NormalResponse.class);
                                     httpResponse.OnNormolResponse(np);
                                 }catch (Exception e){
-                                    httpResponse.OnNormolResponse(new NormalResponse(false,e.getMessage()));
+                                    httpResponse.OnNormolResponse(new NormalResponse(false,e.getMessage(),url,""));
                                 }
                             }else{
-                                httpResponse.OnNormolResponse(new NormalResponse(false,"请求失败"));
+                                httpResponse.OnNormolResponse(new NormalResponse(false,"请求失败"+response.code(),url,""));
                             }
                         }
                     });
                 }catch (Exception e) {
-                    httpResponse.OnNormolResponse(new NormalResponse(false, e.getMessage()));
+                    httpResponse.OnNormolResponse(new NormalResponse(false, e.getMessage(),url,""));
                 }
             }
         }).start();
     }
-    public  static void PostH(final String url,final PostMsg ps,final HTTPResponse httpResponse) {
+
+    public  static void PostH(final String url,final Object obj,final HTTPResponse httpResponse) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try{
-                    final String requestBody = new Gson().toJson(ps);
+                    final String requestBody = new Gson().toJson(obj);
+
                     OkHttpClient okHttpClient = new OkHttpClient.Builder()
                             .connectTimeout(1, TimeUnit.MINUTES)
                             .readTimeout(1, TimeUnit.MINUTES)
                             .build();
-                    MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded; charset=utf-8;");
+                 //   MediaType mediaType = MediaType.parse("application/json; charset=utf-8;");
+                    //.post(RequestBody.create(mediaType, requestBody.getBytes("UTF-8")))
+                    RequestBody req = FormBody.create(MediaType.parse("application/json; charset=utf-8")
+                            , requestBody);
+
+
                     Request request = new Request.Builder()
                             .url(url)
-                            .post(RequestBody.create(mediaType, requestBody.getBytes("UTF-8")))
+                            .post(req)
                             .build();
                     Call call = okHttpClient.newCall(request);
                     call.enqueue(new Callback() {
                         @Override
                         public void onFailure(Call call, IOException e) {
-                            httpResponse.OnNormolResponse(new NormalResponse(false,"请求失败"));
+                            httpResponse.OnNormolResponse(new NormalResponse(false,"请求失败"+e.getMessage()));
                         }
 
                         @Override
@@ -104,7 +112,7 @@ public class HTTPHelper {
                                     httpResponse.OnNormolResponse(new NormalResponse(false,e.getMessage()));
                                 }
                             }else{
-                                httpResponse.OnNormolResponse(new NormalResponse(false,"请求失败"));
+                                httpResponse.OnNormolResponse(new NormalResponse(false,"请求失败"+response.code()+","+requestBody));
                             }
                         }
                     });

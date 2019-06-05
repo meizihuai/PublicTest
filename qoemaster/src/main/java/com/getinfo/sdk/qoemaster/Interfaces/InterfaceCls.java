@@ -10,6 +10,7 @@ import com.getinfo.sdk.qoemaster.QoEVideoSource;
 public class InterfaceCls {
     public  interface IQoEVideoSource{
         void onNewQoEVideoSourceInfo(QoEVideoSource.QoEVideoSourceInfo qoEVideoSourceInfo);
+        void onError(String str);
     }
     public  interface  ILocationInfo{
         void onNewLocationInfo(LocationInfo locationInfo);

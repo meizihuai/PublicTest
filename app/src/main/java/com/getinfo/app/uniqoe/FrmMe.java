@@ -19,6 +19,8 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
+import com.getinfo.app.uniqoe.EnitityCls.QoEMissionInfo;
 import com.getinfo.app.uniqoe.utils.MultipleClick;
 import com.getinfo.sdk.qoemaster.APKVersionCodeUtils;
 import com.getinfo.sdk.qoemaster.GlobalInfo;
@@ -46,8 +48,9 @@ import okhttp3.Response;
 
 //"我的"页面 包含手机基本信息、个人设置、app更新等
 public class FrmMe extends Fragment {
+    private String aid; //终端账户,绑定imsi
     private boolean isFirstSelectedServerUrl = true;
-    private TextView txtPhoneModel, txtphoneOS, txtIMSI, txtIMEI, txtBonusPoints, txtAID;
+    private TextView txtPhoneModel, txtphoneOS, txtIMSI, txtIMEI, txtBonusPoints, txtAID,txtQoEMission;
     private LinearLayout divPhoneOS;
     private int divPhoneOSClickTime = 0;
     private long divPhoneOSClickms = System.currentTimeMillis();
@@ -99,6 +102,7 @@ public class FrmMe extends Fragment {
         txtphoneOS = myView.findViewById(R.id.txtphoneOS);
         txtIMSI = myView.findViewById(R.id.txtIMSI);
         txtIMEI = myView.findViewById(R.id.txtIMEI);
+        txtQoEMission=myView.findViewById(R.id.txtQoEMission);
         txtBonusPoints = myView.findViewById(R.id.txtBonusPoints);
         txtBonusPoints.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -140,6 +144,7 @@ public class FrmMe extends Fragment {
         txtphoneOS.setText("读取中...");
         txtIMSI.setText("读取中...");
         txtIMEI.setText("读取中...");
+        txtQoEMission.setText("正在获取...");
         String versionName = APKVersionCodeUtils.getVerName(getContext());
 
         txtLocalVersion.setText("本地版本:" + versionName);
@@ -266,6 +271,7 @@ public class FrmMe extends Fragment {
                 }
             }
         });
+
     }
 
     private void iniSpinner() {
@@ -565,8 +571,45 @@ public class FrmMe extends Fragment {
     }
 
     public void SetMyAID(String aid) {
+        this.aid=aid;
         txtAID = myView.findViewById(R.id.txtAID);
         txtAID.setText(aid);
+        getMyQoEMission();
+    }
+    private void getMyQoEMission(){
+
+        HTTPHelper.GetH(GlobalInfo.uplanServerUrl + "/api/uniqoe/GetQoEMission?aid=" + aid, new HTTPHelper.HTTPResponse() {
+            @Override
+            public void OnNormolResponse(NormalResponse np) {
+                Module.setHaveQoEMission(false,null);
+                Gson gson = new Gson();
+                String result = gson.toJson(np);
+                if(np.result){
+                    try {
+                        QoEMissionInfo info=gson.fromJson(gson.toJson(np.data),QoEMissionInfo.class);
+                        if(info!=null){
+                            txtQoEMission.setText(info.TYPE);
+                            String json=gson.toJson(info);
+                            Log.i("getMyQoEMission", json);
+                            Module.setHaveQoEMission(true,info);
+                        }else{
+                            txtQoEMission.setText("未知任务");
+
+                        }
+                    }catch (Exception e){
+                        Log.i("getMyQoEMission", e.toString());
+                    }
+                }else{
+                    txtQoEMission.setText("没有任务");
+                }
+                try{
+                    Thread.sleep(10*1000);
+                    getMyQoEMission();
+                }catch (Exception e){
+
+                }
+            }
+        });
     }
 
     public void GetMyBonusPoints() {

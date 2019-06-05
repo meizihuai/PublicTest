@@ -1,7 +1,6 @@
 package com.getinfo.sdk.qoemaster;
 
 
-
 import android.util.Log;
 
 import okhttp3.Call;
@@ -18,10 +17,13 @@ import com.google.gson.Gson;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
+
 //数据统一出口，此类必须单例使用，所有上传到服务器的数据都通过此类
 public class UploadDataHelper {
     // private String serverURL="";
@@ -59,7 +61,6 @@ public class UploadDataHelper {
             }
         }).start();
     }
-
 
 
     public void UploadDataToServer(QoEVideoInfo qoEVideoInfo) {
@@ -115,15 +116,19 @@ public class UploadDataHelper {
     }
 
 
-
     private boolean isUploadOldDataing = false;
+
+    private List<LocalTestInfoHelper.LocalTestInfo> localNomal = new ArrayList<>();//正常离线数据集合
+    private List<LocalTestInfoHelper.LocalTestInfo> localBP = new ArrayList<>();//黑点线数据 集合
 
     private void UploadOldData() {
         // Log.i("UploadofflineDatas","isUploadOldDataing = "+isUploadOldDataing);
         if (isUploadOldDataing) return;
         isUploadOldDataing = true;
+        //TODO 查询数据库 查询出所有离线数据
         LocalTestInfoHelper localTestInfoHelper = LocalTestInfoHelper.getInstance();
         LocalTestInfoHelper.LocalTestInfo[] localTestInfos = localTestInfoHelper.getLocalTestInfo();
+
         if (localTestInfos == null) {
             Log.i("UploadofflineDatas", "localTestInfos is null");
             isUploadOldDataing = false;
@@ -134,17 +139,44 @@ public class UploadDataHelper {
             isUploadOldDataing = false;
             return;
         }
-        int maxUploadLength=100;
-        if(localTestInfos.length<maxUploadLength){
-            maxUploadLength=localTestInfos.length;
+        //区分正常离线数据和黑点数据
+        separatedData(localTestInfos);
+        if (localBP.size() > 0) {
+            AginUpBPData();//上传黑点数据
         }
-        Log.i("UploadofflineDatas", "localTestInfos.length="+localTestInfos.length);
+        if (localNomal.size() > 0) { //上传正常离线数据
+            uploadNomalLD();
+        }
+    }
+
+    //区分正常离线数据 和 黑点数据
+    private void separatedData(LocalTestInfoHelper.LocalTestInfo[] localTestInfos) {
+        localBP.clear();
+        localNomal.clear();
+        if (null != localTestInfos && localTestInfos.length > 0) {
+            for (LocalTestInfoHelper.LocalTestInfo localTestInfo : localTestInfos) {
+                if ("QoEBlackPoint".equals(localTestInfo.type)) {//黑点数据
+                    localBP.add(localTestInfo);
+                } else {//非黑点数据  正常离线数据
+                    localNomal.add(localTestInfo);
+                }
+            }
+        }
+    }
+
+    //上传正常的离线数据
+    private void uploadNomalLD() {
+        int maxUploadLength = 100;
+        if (localNomal.size() < maxUploadLength) {
+            maxUploadLength = localNomal.size();
+        }
+        Log.i("UploadofflineDatas", "localNomal.size()=" + localNomal.size());
         int[] ids = new int[maxUploadLength];
         LocalTestInfoHelper.LocalTestInfo[] tmpTestInfos;
-        tmpTestInfos=new  LocalTestInfoHelper.LocalTestInfo[maxUploadLength];
+        tmpTestInfos = new LocalTestInfoHelper.LocalTestInfo[maxUploadLength];
         for (int i = 0; i < maxUploadLength; i++) {
-            ids[i] = localTestInfos[i].id;
-            tmpTestInfos[i]=localTestInfos[i];
+            ids[i] = localNomal.get(i).id;
+            tmpTestInfos[i] = localNomal.get(i);
         }
         Log.i("UploadofflineDatas", "UploadofflineDatas.length=" + maxUploadLength);
         Gson gson = new Gson();
@@ -172,6 +204,24 @@ public class UploadDataHelper {
         }
     }
 
+    //上传黑点数据
+    private void AginUpBPData() {
+        QoEBlackPoint qoEBlackPoint=null;
+        for (LocalTestInfoHelper.LocalTestInfo localTestInfo : localBP) {
+            if ("QoEBlackPoint".equals(localTestInfo.type)) {//是黑点数据
+                try {
+                    qoEBlackPoint = new Gson().fromJson(localTestInfo.json, QoEBlackPoint.class);
+                    if (qoEBlackPoint != null) {
+                        qoEBlackPoint.UploadBPToServer(localTestInfo.id);//上传黑点数据
+                    }
+                } catch (Exception e) {
+
+                }
+            }
+        }
+    }
+
+    //上传历史离线数据
     private void asycUploadOldData(final String requestBody, int count, final String TAG, final int[] ids) {
         if (count >= 1) return;
         try {
@@ -253,6 +303,8 @@ public class UploadDataHelper {
 
 
     private void UploadData(PhoneInfo npi) {
+        npi.ADJ_SIGNAL="";
+        npi.sigNalInfo="";
         Gson gson = new Gson();
         String str = gson.toJson(npi);
         Log.i("UploadPhoneInfo", str);
@@ -261,7 +313,9 @@ public class UploadDataHelper {
             json.put("func", "UploadPhoneInfo");
             JSONObject j = new JSONObject(str);
             json.put("data", j);
+
             final String requestBody = json.toString();
+            Log.i("UploadPhoneInfo","字节长度="+requestBody.length());
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -276,6 +330,8 @@ public class UploadDataHelper {
     private void UploadData(QoEVideoInfo qoEVideoInfo) {
         Log.i("UploadQoEVideoInfo", "1");
         try {
+            qoEVideoInfo.pi.ADJ_SIGNAL="";
+            qoEVideoInfo.pi.sigNalInfo="";
             Gson gson = new Gson();
             String str = gson.toJson(qoEVideoInfo);
             Log.i("UploadQoEVideoInfo", str);
@@ -284,6 +340,7 @@ public class UploadDataHelper {
             JSONObject j = new JSONObject(str);
             json.put("data", j);
             final String requestBody = json.toString();
+            Log.i("UploadQoEVideoInfo","字节长度="+requestBody.length());
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -297,9 +354,9 @@ public class UploadDataHelper {
 
     private void getAsynHttp(final String requestBody, final int count, final String TAG, final String type) {
         if (count == 0) {
-            try{
+            try {
                 UploadOldData();
-            }catch (Exception e){
+            } catch (Exception e) {
 
             }
         }

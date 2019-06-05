@@ -5,6 +5,7 @@
     <!--#7B72E9-->
     <!--#05ACED-->
     <!--#05ACED-->
+    <color name="startingwindow_bgcolor">#00bfff</color>
     <color name="cardViewBak">#ffffff</color>
     <color name="black_overlay">#66000000</color>
     <color name="titleColor">#05ACED</color>

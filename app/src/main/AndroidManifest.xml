@@ -31,6 +31,7 @@
             android:theme="@style/AppTheme.NoActionBar.NoActionBar" />
         <activity android:name=".OneKeyTestResultActivity" />
         <activity
+            android:theme="@style/AppTheme.StartingWindowTheme"
             android:name=".MainActivity"
             android:configChanges="keyboardHidden|orientation|screenSize">
             <intent-filter>

@@ -12,6 +12,12 @@ public class NormalResponse {
         this.result=result;
         this.msg=msg;
     }
+    public  NormalResponse(boolean result,String msg,String errmsg,Object data){
+        this.result=result;
+        this.msg=msg;
+        this.errmsg=errmsg;
+        this.data=data;
+    }
 
 }
 
